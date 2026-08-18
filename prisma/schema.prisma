@@ -1,0 +1,170 @@
+// ============================================================
+// HeritageVerse — Prisma Schema
+// Database: PostgreSQL
+//
+// To initialize:
+//   npx prisma migrate dev --name init
+//   npx prisma generate
+//
+// To seed: npx prisma db seed
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ────────────────────────────────────────────────────────────
+// Enums
+// ────────────────────────────────────────────────────────────
+
+enum HeritageCategory {
+  Temple
+  Fort
+  Palace
+  Cave
+  Monument
+  Mosque
+  Church
+  Stepwell
+  Ruins
+  ArchaeologicalSite
+  NatureAndHeritage
+  Other
+}
+
+enum Region {
+  NorthIndia
+  SouthIndia
+  EastIndia
+  WestIndia
+  CentralIndia
+  NortheastIndia
+}
+
+enum HistoricalPeriod {
+  Ancient
+  EarlyMedieval
+  Medieval
+  MughalEra
+  ColonialEra
+  Modern
+}
+
+enum ArchitecturalStyle {
+  Dravidian
+  Nagara
+  Vesara
+  Mughal
+  IndoIslamic
+  Buddhist
+  Jain
+  Colonial
+  RockCut
+  Rajput
+  Kerala
+  Other
+}
+
+enum UnescoStatus {
+  WorldHeritageSite
+  TentativeList
+  None
+}
+
+enum MediaType {
+  image
+  video
+  panorama
+  threeSixty
+}
+
+enum ModelFormat {
+  glb
+  gltf
+  obj
+  fbx
+}
+
+// ────────────────────────────────────────────────────────────
+// Models
+// ────────────────────────────────────────────────────────────
+
+model HeritageSite {
+  id                   String            @id @default(cuid())
+  name                 String
+  slug                 String            @unique
+  description          String            @db.Text
+  shortDescription     String
+  state                String
+  city                 String
+  region               Region
+  latitude             Float
+  longitude            Float
+  historicalPeriod     HistoricalPeriod
+  architecturalStyle   ArchitecturalStyle
+  category             HeritageCategory
+  unescoStatus         UnescoStatus      @default(None)
+  yearBuilt            Int?
+  history              String            @db.Text
+  architecture         String            @db.Text
+  culturalSignificance String            @db.Text
+  heroImage            String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  media          Media[]
+  threeDModels   ThreeDModel[]
+  timelineEvents TimelineEvent[]
+
+  @@map("heritage_sites")
+}
+
+model Media {
+  id            String    @id @default(cuid())
+  heritageSiteId String
+  type          MediaType
+  url           String
+  title         String?
+  description   String?   @db.Text
+
+  createdAt DateTime @default(now())
+
+  heritageSite HeritageSite @relation(fields: [heritageSiteId], references: [id], onDelete: Cascade)
+
+  @@map("media")
+}
+
+model ThreeDModel {
+  id             String      @id @default(cuid())
+  heritageSiteId String
+  modelUrl       String
+  thumbnailUrl   String?
+  format         ModelFormat
+  fileSize       Int?        // in bytes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  heritageSite HeritageSite @relation(fields: [heritageSiteId], references: [id], onDelete: Cascade)
+
+  @@map("three_d_models")
+}
+
+model TimelineEvent {
+  id             String @id @default(cuid())
+  heritageSiteId String
+  year           Int
+  title          String
+  description    String @db.Text
+
+  heritageSite HeritageSite @relation(fields: [heritageSiteId], references: [id], onDelete: Cascade)
+
+  @@map("timeline_events")
+}

@@ -1,26 +1,201 @@
+/* ── Google Fonts — must be before all other rules ── */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap");
+
 @import "tailwindcss";
 
+/* ============================================================
+   HeritageVerse — Global Design System
+   Design aesthetic: Digital museum × Travel × 3D Experience
+   ============================================================ */
+
+/* ── CSS Design Tokens ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors */
+  --hv-gold: #d4a017;
+  --hv-gold-light: #f0c040;
+  --hv-gold-muted: #a07810;
+  --hv-brown: #3d1f00;
+  --hv-brown-light: #6b3a1f;
+  --hv-cream: #faf7f0;
+  --hv-cream-dark: #f0e8d8;
+
+  /* Dark Background System */
+  --hv-bg-primary: #0a0806;
+  --hv-bg-secondary: #120e09;
+  --hv-bg-card: #1a1410;
+  --hv-bg-elevated: #221c16;
+  --hv-bg-border: rgba(212, 160, 23, 0.15);
+
+  /* Text */
+  --hv-text-primary: #faf7f0;
+  --hv-text-secondary: #c8b896;
+  --hv-text-muted: #8a7660;
+
+  /* Gradients */
+  --hv-gradient-hero: linear-gradient(
+    to bottom,
+    rgba(10, 8, 6, 0) 0%,
+    rgba(10, 8, 6, 0.6) 60%,
+    rgba(10, 8, 6, 0.95) 100%
+  );
+  --hv-gradient-gold: linear-gradient(135deg, #d4a017 0%, #f0c040 50%, #a07810 100%);
+  --hv-gradient-card: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(10, 8, 6, 0.95) 100%
+  );
+
+  /* Fonts */
+  --font-display: "Cinzel", serif;
+  --font-body: "Inter", sans-serif;
+  --font-serif: "Crimson Pro", serif;
+
+  /* Spacing */
+  --section-padding: 5rem 1.5rem;
+
+  /* Animations */
+  --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--hv-bg-primary);
+  --color-foreground: var(--hv-text-primary);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base Styles ── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--hv-bg-primary);
+  color: var(--hv-text-primary);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ── Typography Scale ── */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+/* ── Gold Gradient Text ── */
+.text-gold-gradient {
+  background: var(--hv-gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--hv-bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hv-gold-muted);
+  border-radius: 3px;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: rgba(26, 20, 16, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--hv-bg-border);
+}
+
+/* ── Shimmer animation (loading skeletons) ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--hv-bg-card) 25%,
+    var(--hv-bg-elevated) 50%,
+    var(--hv-bg-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ── Fade in up animation ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.animate-fade-in-up-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.animate-fade-in-up-delay-3 { animation-delay: 0.3s; opacity: 0; }
+.animate-fade-in-up-delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+/* ── Pulse glow ── */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 160, 23, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(212, 160, 23, 0.6); }
+}
+
+.glow-gold {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ── Heritage Card hover effect ── */
+.heritage-card-img {
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.heritage-card:hover .heritage-card-img {
+  transform: scale(1.08);
+}
+
+/* ── Gold divider ── */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--hv-gold), transparent);
+  opacity: 0.4;
+}
+
+/* ── Section backgrounds ── */
+.section-dark {
+  background: var(--hv-bg-primary);
+}
+.section-elevated {
+  background: var(--hv-bg-secondary);
+}
+
+/* ── Timeline ── */
+.timeline-line {
+  background: linear-gradient(to bottom, var(--hv-gold), transparent);
+  width: 2px;
 }
