@@ -27,7 +27,7 @@ export function Badge({ label, variant = "default", className }: BadgeProps) {
       <span
         className={cn(
           baseClasses,
-          "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+          "bg-[var(--hv-bg-secondary)] text-[var(--hv-blue-dark)] border-[var(--hv-blue)]/20",
           className
         )}
       >
@@ -41,7 +41,7 @@ export function Badge({ label, variant = "default", className }: BadgeProps) {
       <span
         className={cn(
           baseClasses,
-          "bg-amber-500/10 text-amber-400 border-amber-500/20",
+          "bg-[#FAF7F2] text-[var(--hv-gold)] border-[var(--hv-border-gold)]",
           className
         )}
       >

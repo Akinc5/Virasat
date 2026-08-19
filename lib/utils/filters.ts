@@ -68,13 +68,13 @@ export const UNESCO_STATUSES: FilterOption[] = [
 ];
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  Temple: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  Fort: "bg-red-500/20 text-red-300 border-red-500/30",
-  Palace: "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  Cave: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-  Monument: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-  Mosque: "bg-teal-500/20 text-teal-300 border-teal-500/30",
-  Ruins: "bg-stone-500/20 text-stone-300 border-stone-500/30",
-  "Archaeological Site": "bg-green-500/20 text-green-300 border-green-500/30",
-  Other: "bg-gray-500/20 text-gray-300 border-gray-500/30",
+  Temple: "bg-[#FDF6E2] text-[#8C6D39] border-[#EAD8B1]/40",
+  Fort: "bg-[#FAF0ED] text-[#9A5B4D] border-[#ECC8C0]/40",
+  Palace: "bg-[#F8F1F5] text-[#8A6D7C] border-[#E1D1DC]/40",
+  Cave: "bg-[#F3F5F6] text-[#5A6D7C] border-[#D7DFE3]/40",
+  Monument: "bg-[#EDF2F4] text-[#4C697B] border-[#CFDCE3]/40",
+  Mosque: "bg-[#EDF5F2] text-[#467868] border-[#CFE6DD]/40",
+  Ruins: "bg-[#FAF7F2] text-[#6B5E52] border-[#E1D8CC]/40",
+  "Archaeological Site": "bg-[#F3F5ED] text-[#5C6E43] border-[#D6DFCA]/40",
+  Other: "bg-[#FAF9F5] text-[#8A7F73] border-[#EBE8DF]/40",
 };

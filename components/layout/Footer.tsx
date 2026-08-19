@@ -22,23 +22,24 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <footer className="border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)] relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center">
-                <Globe size={16} className="text-white" />
+            <Link href="/" className="flex items-center gap-2.5 mb-5">
+              <div className="w-7 h-7 rounded-sm bg-gradient-to-br from-[var(--hv-blue)] to-[var(--hv-blue-dark)] flex items-center justify-center">
+                <Globe size={13} className="text-[var(--hv-bg-primary)]" />
               </div>
-              <span className="font-display font-bold text-lg text-[var(--hv-text-primary)]">
-                Heritage<span className="text-gold-gradient">Verse</span>
+              <span className="font-display tracking-widest text-sm sm:text-base font-semibold text-[var(--hv-text-primary)] uppercase flex flex-col items-start leading-none gap-0.5">
+                VIRASAT
+                <span className="text-[8px] font-serif italic text-[var(--hv-gold)] uppercase tracking-[0.25em] font-normal">Digital Heritage Archive</span>
               </span>
             </Link>
-            <p className="text-sm text-[var(--hv-text-muted)] leading-relaxed mb-5 max-w-xs">
-              Digitally preserving India's cultural heritage through immersive web, AR, and VR experiences.
+            <p className="text-sm text-[var(--hv-text-secondary)] leading-relaxed mb-6 font-serif">
+              *Digitally documenting and preserving India's cultural architectural legacy for generations.*
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2.5">
               {[
                 { icon: ExternalLink, href: "#", label: "GitHub" },
                 { icon: Star, href: "#", label: "Twitter" },
@@ -48,9 +49,9 @@ export function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-8 h-8 rounded-lg bg-white/5 hover:bg-amber-500/20 flex items-center justify-center text-[var(--hv-text-muted)] hover:text-amber-400 transition-all"
+                  className="w-8 h-8 rounded-sm border border-[var(--hv-bg-border)] hover:border-[var(--hv-gold)] flex items-center justify-center text-[var(--hv-text-secondary)] hover:text-[var(--hv-text-primary)] hover:bg-[var(--hv-bg-primary)]/50 transition-all duration-300"
                 >
-                  <Icon size={15} />
+                  <Icon size={14} />
                 </a>
               ))}
             </div>
@@ -59,15 +60,15 @@ export function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([section, links]) => (
             <div key={section}>
-              <h4 className="text-xs font-semibold uppercase tracking-widest text-[var(--hv-text-muted)] mb-4">
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-[var(--hv-text-secondary)] mb-5">
                 {section}
               </h4>
-              <ul className="space-y-2.5">
+              <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-[var(--hv-text-secondary)] hover:text-amber-400 transition-colors"
+                      className="text-sm text-[var(--hv-text-secondary)] hover:text-[var(--hv-text-primary)] hover:underline decoration-[var(--hv-gold)] underline-offset-4 transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -78,11 +79,10 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
-        <div className="gold-divider mt-10 mb-6" />
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--hv-text-muted)]">
+        {/* Bottom bar with double border styling */}
+        <div className="border-t border-[var(--hv-bg-border)] pt-8 mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--hv-text-muted)]">
           <p>© {new Date().getFullYear()} HeritageVerse. Preserving India's Legacy for the Digital Age.</p>
-          <p className="font-display tracking-wider">🇮🇳 Made for India</p>
+          <p className="font-display tracking-widest text-[var(--hv-text-secondary)]">🇮🇳 DIGITAL ARCHIVE</p>
         </div>
       </div>
     </footer>
