@@ -109,6 +109,8 @@ export interface HeritageSite {
   heroImage: string;
   createdAt: Date | string;
   updatedAt: Date | string;
+  // Sketchfab embed model ID (optional) — e.g. "33149233cefd492b9abdd50fe5a8c921"
+  sketchfabModelId?: string;
   // Relations (optional — may not always be loaded)
   media?: Media[];
   threeDModels?: ThreeDModel[];

@@ -1,21 +1,21 @@
 "use client";
 
 // ============================================================
-// ExperienceViewer — 3D Model Viewer Placeholder
+// ExperienceViewer — 3D Model Viewer
 //
-// This component is designed as a DROP-IN container for a real
-// Three.js / React Three Fiber / WebXR experience.
+// Renders a real Sketchfab embed when site.sketchfabModelId is set,
+// otherwise shows the animated placeholder.
 //
-// TO ADD A REAL 3D EXPERIENCE:
+// TO ADD A NATIVE 3D EXPERIENCE (Three.js):
 //  1. Install: npm install three @react-three/fiber @react-three/drei
-//  2. Replace the placeholder div below with a <Canvas> component
+//  2. Replace the SketchfabViewer below with a <Canvas> component
 //  3. Load your .glb model using useGLTF from @react-three/drei
-//  4. See /docs/3D_INTEGRATION.md for full guide
 // ============================================================
 
 import { useState } from "react";
 import { Maximize2, Minimize2, RotateCcw, Info } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
+import { SketchfabViewer } from "@/components/experience/SketchfabViewer";
 import { cn } from "@/lib/utils";
 import type { HeritageSite } from "@/types";
 
@@ -28,8 +28,20 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const hasModel = site.threeDModels && site.threeDModels.length > 0;
+  const hasSketchfab = Boolean(site.sketchfabModelId);
 
+  // ── Real Sketchfab embed ──────────────────────────────────
+  if (hasSketchfab) {
+    return (
+      <SketchfabViewer
+        modelId={site.sketchfabModelId!}
+        title={site.name}
+        className={className}
+      />
+    );
+  }
+
+  // ── Placeholder for sites without a model ────────────────
   return (
     <div
       className={cn(
@@ -84,9 +96,7 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
                   {site.name}
                 </p>
                 <p className="text-sm text-[var(--hv-text-muted)] mb-1">
-                  {hasModel
-                    ? "3D model ready — connect renderer to display"
-                    : "3D model not yet available for this site"}
+                  3D model not yet available for this site
                 </p>
                 <p className="text-xs text-amber-500/70 font-mono">
                   {/* Extension point marker for developers */}
@@ -127,3 +137,4 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
     </div>
   );
 }
+

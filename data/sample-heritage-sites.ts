@@ -35,6 +35,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     culturalSignificance:
       "The Taj Mahal is regarded as the finest example of Mughal architecture, a style that combines elements of Persian, Indian, and Islamic architectural styles. It is widely considered one of the most beautiful buildings in the world and has been described as 'the jewel of Muslim art in India'.",
     heroImage: "/images/heritage/taj-mahal-hero.jpg",
+    sketchfabModelId: "33149233cefd492b9abdd50fe5a8c921",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
     media: [
@@ -115,6 +116,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     culturalSignificance:
       "Hampi was a major center of Hindu culture, religion, and commerce. The Vijayanagara Empire was a stronghold of Hindu tradition and its kings were great patrons of art, literature, and architecture. Today Hampi is revered as a sacred place by Hindus.",
     heroImage: "/images/heritage/hampi-hero.jpg",
+    sketchfabModelId: "dfaf413f0ce845a3b798b0bb4079962a",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
     media: [
@@ -177,6 +179,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     culturalSignificance:
       "The Sun Temple is a masterpiece of Odishan architecture and sculpture. The intricate carvings are a visual encyclopedia of medieval Indian life — from musicians and dancers to divine beings and erotic art. The temple is a symbol of Odisha's cultural identity.",
     heroImage: "/images/heritage/konark-hero.jpg",
+    sketchfabModelId: "6cc905be2ae34e8091eb1eaa84a17738",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
     media: [
@@ -232,6 +235,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     culturalSignificance:
       "Ajanta is one of the greatest artistic achievements in human history. The murals are considered the finest surviving examples of Indian art from this period and had a profound influence on Buddhist art across Asia — from Sri Lanka to Japan.",
     heroImage: "/images/heritage/ajanta-hero.jpg",
+    sketchfabModelId: "d916f1bc949c4284ab3fe56ddbfe660d",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
     media: [
@@ -302,6 +306,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     culturalSignificance:
       "Ellora is unique for showcasing three living religions side by side, demonstrating the religious pluralism of ancient India. The Kailasa Temple alone required the removal of 400,000 tons of rock over 100 years.",
     heroImage: "/images/heritage/ellora-hero.jpg",
+    sketchfabModelId: "1a5ec1e212f9451e80dc051e97164d17",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
     media: [
