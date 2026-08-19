@@ -4,45 +4,44 @@
 @import "tailwindcss";
 
 /* ============================================================
-   HeritageVerse — Global Design System
-   Design aesthetic: Digital museum × Travel × 3D Experience
+   HeritageVerse — Premium Editorial Design System
+   Design aesthetic: Contemporary Indian Museum × Travel Archive
    ============================================================ */
 
 /* ── CSS Design Tokens ── */
 :root {
-  /* Brand Colors */
-  --hv-gold: #d4a017;
-  --hv-gold-light: #f0c040;
-  --hv-gold-muted: #a07810;
-  --hv-brown: #3d1f00;
-  --hv-brown-light: #6b3a1f;
-  --hv-cream: #faf7f0;
-  --hv-cream-dark: #f0e8d8;
+  /* Brand Accents */
+  --hv-gold: #C5A059;         /* Antique Matte Gold */
+  --hv-gold-light: #D9B775;
+  --hv-gold-muted: #AB8743;
+  --hv-blue: #5A7B8F;         /* Muted Dusty Blue */
+  --hv-blue-dark: #4C697B;    /* Deep Desaturated Blue */
 
-  /* Dark Background System */
-  --hv-bg-primary: #0a0806;
-  --hv-bg-secondary: #120e09;
-  --hv-bg-card: #1a1410;
-  --hv-bg-elevated: #221c16;
-  --hv-bg-border: rgba(212, 160, 23, 0.15);
+  /* Light Editorial Background System */
+  --hv-bg-primary: #FAF6EE;   /* Warm Ivory / Cream */
+  --hv-bg-secondary: #F5EFE4; /* Soft Parchment */
+  --hv-bg-card: #FCFAF5;      /* Crisp Cream Sheet */
+  --hv-bg-elevated: #EFE9DC;  /* Slightly Darker Parchment */
+  --hv-bg-border: rgba(90, 123, 143, 0.15); /* Soft Dusty Blue Hairline */
+  --hv-border-gold: rgba(197, 160, 89, 0.25); /* Faint Matte Gold Hairline */
 
-  /* Text */
-  --hv-text-primary: #faf7f0;
-  --hv-text-secondary: #c8b896;
-  --hv-text-muted: #8a7660;
+  /* Text Typography System */
+  --hv-text-primary: #1C1917;   /* Deep Warm Charcoal */
+  --hv-text-secondary: #6B5E52; /* Muted Taupe */
+  --hv-text-muted: #8A7F73;     /* Muted Sandstone */
 
-  /* Gradients */
+  /* Gradients (Editorial-safe, low contrast overlays) */
   --hv-gradient-hero: linear-gradient(
     to bottom,
-    rgba(10, 8, 6, 0) 0%,
-    rgba(10, 8, 6, 0.6) 60%,
-    rgba(10, 8, 6, 0.95) 100%
+    rgba(250, 246, 238, 0) 0%,
+    rgba(250, 246, 238, 0.4) 60%,
+    rgba(250, 246, 238, 1) 100%
   );
-  --hv-gradient-gold: linear-gradient(135deg, #d4a017 0%, #f0c040 50%, #a07810 100%);
+  --hv-gradient-gold: linear-gradient(135deg, #C5A059 0%, #D9B775 50%, #AB8743 100%);
   --hv-gradient-card: linear-gradient(
     to bottom,
-    transparent 40%,
-    rgba(10, 8, 6, 0.95) 100%
+    transparent 50%,
+    rgba(250, 246, 238, 0.98) 100%
   );
 
   /* Fonts */
@@ -50,12 +49,9 @@
   --font-body: "Inter", sans-serif;
   --font-serif: "Crimson Pro", serif;
 
-  /* Spacing */
-  --section-padding: 5rem 1.5rem;
-
-  /* Animations */
-  --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Spacing & Borders */
+  --section-padding: 6rem 1.5rem;
+  --transition-smooth: 500ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @theme inline {
@@ -76,12 +72,12 @@ body {
   background: var(--hv-bg-primary);
   color: var(--hv-text-primary);
   font-family: var(--font-body);
-  line-height: 1.6;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
 
-/* ── Typography Scale ── */
+/* ── Typography ── */
 .font-display {
   font-family: var(--font-display);
 }
@@ -92,10 +88,11 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  color: var(--hv-text-primary);
 }
 
-/* ── Gold Gradient Text ── */
+/* ── Gold/Blue Accent Text ── */
 .text-gold-gradient {
   background: var(--hv-gradient-gold);
   -webkit-background-clip: text;
@@ -103,24 +100,142 @@ h1, h2, h3, h4 {
   background-clip: text;
 }
 
-/* ── Scrollbar ── */
+.text-dusty-blue {
+  color: var(--hv-blue);
+}
+
+/* ── Museum Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   background: var(--hv-bg-secondary);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--hv-gold-muted);
-  border-radius: 3px;
+  background: var(--hv-blue-dark);
+  border-radius: 0px;
 }
 
-/* ── Glass Card ── */
-.glass-card {
-  background: rgba(26, 20, 16, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+/* ── Background & Ambient Layers (Future Interactivity Layer hooks) ── */
+.ambient-texture-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(90, 123, 143, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.ambient-floral-motif {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+
+/* ── Architectural Arch Frames & Image Masks ── */
+.arch-frame {
+  position: relative;
+  border-radius: 9999px 9999px 0 0;
+  border: 1px solid var(--hv-border-gold);
+  padding: 8px;
+  background: var(--hv-bg-secondary);
+}
+
+.arch-image-mask {
+  border-radius: 9999px 9999px 0 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Polished Editorial variations for monuments */
+.arch-frame-tall {
+  border-radius: 9999px 9999px 0 0;
+  border: 1px solid var(--hv-border-gold);
+  padding: 6px;
+  background: var(--hv-bg-secondary);
+}
+
+.rect-frame-double {
+  border: 1px solid var(--hv-border-gold);
+  padding: 5px;
+  background: var(--hv-bg-secondary);
+  position: relative;
+}
+.rect-frame-double::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px dashed rgba(90, 123, 143, 0.25);
+  pointer-events: none;
+}
+
+.geo-frame-bracket {
   border: 1px solid var(--hv-bg-border);
+  padding: 8px;
+  background: var(--hv-bg-secondary);
+  position: relative;
+}
+
+/* Corner ornamental line brackets for museum prints */
+.museum-bracket-top-left {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid var(--hv-gold);
+  border-left: 1.5px solid var(--hv-gold);
+}
+.museum-bracket-top-right {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid var(--hv-gold);
+  border-right: 1.5px solid var(--hv-gold);
+}
+.museum-bracket-bottom-left {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1.5px solid var(--hv-gold);
+  border-left: 1.5px solid var(--hv-gold);
+}
+.museum-bracket-bottom-right {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1.5px solid var(--hv-gold);
+  border-right: 1.5px solid var(--hv-gold);
+}
+
+.scalloped-border {
+  border: 1px solid var(--hv-bg-border);
+  position: relative;
+}
+
+/* Double-ruled editorial lines */
+.double-border-bottom {
+  border-bottom: 3px double var(--hv-border-gold);
+}
+
+/* ── Fine-Line Editorial Card ── */
+.editorial-card {
+  background: var(--hv-bg-card);
+  border: 1px solid var(--hv-bg-border);
+  transition: all var(--transition-smooth);
+}
+.editorial-card:hover {
+  border-color: var(--hv-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -15px rgba(107, 94, 82, 0.12);
 }
 
 /* ── Shimmer animation (loading skeletons) ── */
@@ -132,19 +247,19 @@ h1, h2, h3, h4 {
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--hv-bg-card) 25%,
+    var(--hv-bg-secondary) 25%,
     var(--hv-bg-elevated) 50%,
-    var(--hv-bg-card) 75%
+    var(--hv-bg-secondary) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
-/* ── Fade in up animation ── */
+/* ── Clean Opacity and Scale Animations ── */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -153,37 +268,41 @@ h1, h2, h3, h4 {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-.animate-fade-in-up-delay-1 { animation-delay: 0.1s; opacity: 0; }
-.animate-fade-in-up-delay-2 { animation-delay: 0.2s; opacity: 0; }
-.animate-fade-in-up-delay-3 { animation-delay: 0.3s; opacity: 0; }
-.animate-fade-in-up-delay-4 { animation-delay: 0.4s; opacity: 0; }
+.animate-fade-in-up-delay-1 { animation-delay: 0.15s; opacity: 0; }
+.animate-fade-in-up-delay-2 { animation-delay: 0.3s; opacity: 0; }
+.animate-fade-in-up-delay-3 { animation-delay: 0.45s; opacity: 0; }
 
-/* ── Pulse glow ── */
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(212, 160, 23, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(212, 160, 23, 0.6); }
-}
-
-.glow-gold {
-  animation: pulseGlow 2s ease-in-out infinite;
-}
-
-/* ── Heritage Card hover effect ── */
+/* ── Slow Heritage Card Hover Scale ── */
 .heritage-card-img {
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 1200ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 .heritage-card:hover .heritage-card-img {
-  transform: scale(1.08);
+  transform: scale(1.04);
 }
 
-/* ── Gold divider ── */
-.gold-divider {
+/* ── Floral Motif Dividers ── */
+.floral-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 3rem 0;
+  opacity: 0.55;
+}
+.floral-divider::before,
+.floral-divider::after {
+  content: "";
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--hv-gold), transparent);
-  opacity: 0.4;
+  flex: 1;
+  background: linear-gradient(to right, transparent, var(--hv-blue), transparent);
+}
+.floral-divider-mark {
+  color: var(--hv-gold);
+  font-size: 14px;
+  letter-spacing: 0.1em;
 }
 
 /* ── Section backgrounds ── */
@@ -196,6 +315,7 @@ h1, h2, h3, h4 {
 
 /* ── Timeline ── */
 .timeline-line {
-  background: linear-gradient(to bottom, var(--hv-gold), transparent);
-  width: 2px;
+  background: linear-gradient(to bottom, var(--hv-blue), transparent);
+  width: 1px;
 }
+

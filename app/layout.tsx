@@ -61,7 +61,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-full flex flex-col antialiased">
+      <body className="min-h-full flex flex-col antialiased bg-[var(--hv-bg-primary)] text-[var(--hv-text-primary)]">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

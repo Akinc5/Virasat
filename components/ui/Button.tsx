@@ -17,15 +17,15 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-amber-600 hover:bg-amber-500 text-white shadow-lg shadow-amber-900/30 hover:shadow-amber-800/40",
+    "bg-[var(--hv-text-primary)] hover:bg-[var(--hv-text-secondary)] text-[var(--hv-bg-primary)] shadow-sm hover:shadow-md",
   secondary:
-    "bg-[var(--hv-bg-elevated)] hover:bg-[var(--hv-bg-card)] text-[var(--hv-text-primary)] border border-[var(--hv-bg-border)]",
+    "bg-[var(--hv-bg-secondary)] hover:bg-[var(--hv-bg-elevated)] text-[var(--hv-text-primary)] border border-[var(--hv-bg-border)]",
   ghost:
-    "bg-transparent hover:bg-white/5 text-[var(--hv-text-secondary)] hover:text-[var(--hv-text-primary)]",
+    "bg-transparent hover:bg-[var(--hv-bg-secondary)] text-[var(--hv-text-secondary)] hover:text-[var(--hv-text-primary)]",
   outline:
-    "bg-transparent border border-amber-600/50 text-amber-400 hover:border-amber-500 hover:bg-amber-500/10",
+    "bg-transparent border border-[var(--hv-blue)]/40 text-[var(--hv-blue-dark)] hover:border-[var(--hv-blue)] hover:bg-[var(--hv-blue)]/5",
   gold:
-    "bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-[var(--hv-brown)] font-semibold shadow-lg shadow-amber-900/40",
+    "bg-[var(--hv-gold)] hover:bg-[var(--hv-gold-light)] text-[var(--hv-bg-primary)] font-medium shadow-sm hover:shadow-md",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
