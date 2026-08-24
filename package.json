@@ -11,6 +11,7 @@
   "dependencies": {
     "@prisma/client": "^7.9.1",
     "clsx": "^2.1.1",
+    "google-tts-api": "^2.0.2",
     "lucide-react": "^1.32.0",
     "next": "16.3.1",
     "prisma": "^7.9.1",

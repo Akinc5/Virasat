@@ -83,6 +83,14 @@ export interface ThreeDModel {
   thumbnailUrl?: string;
   format: ModelFormat;
   fileSize?: number;
+  audioDescriptionUrl?: string;
+  audioDescriptionText?: string;
+  audioTranslations?: {
+    hi?: string;
+    te?: string;
+    ta?: string;
+    ml?: string;
+  };
   createdAt: Date | string;
   updatedAt: Date | string;
 }
