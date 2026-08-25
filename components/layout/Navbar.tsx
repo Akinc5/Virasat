@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -90,6 +91,7 @@ export function Navbar() {
               Explore Heritage
             </Button>
           </Link>
+          <UserMenu className="ml-1" />
         </div>
 
         {/* Mobile Toggle */}
@@ -147,6 +149,10 @@ export function Navbar() {
                 Explore Heritage
               </Button>
             </Link>
+            <UserMenu
+              variant="inline"
+              className="w-full bg-[var(--hv-bg-secondary)] rounded-sm [&>a]:block [&>a]:w-full [&_button]:w-full"
+            />
           </div>
         </div>
       </div>
