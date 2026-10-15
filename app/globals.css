@@ -319,3 +319,120 @@ h1, h2, h3, h4 {
   width: 1px;
 }
 
+/* ── 3D Flashcard System ── */
+.flashcard-container {
+  perspective: 1200px;
+}
+
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flashcard-flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 4px;
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Model Viewer & 3D Hotspot Pins ── */
+.hotspot-pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.25s ease;
+  z-index: 20;
+}
+
+.hotspot-pin:hover,
+.hotspot-pin:focus-visible {
+  transform: scale(1.2);
+}
+
+.hotspot-beacon {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(197, 160, 89, 0.4);
+  animation: hotspot-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.hotspot-dot {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: var(--hv-gold);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.8), 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.hotspot-pin:hover .hotspot-dot {
+  background: #ffffff;
+  transform: scale(1.15);
+}
+
+@keyframes hotspot-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  60% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.hotspot-label-pill {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(28, 25, 23, 0.92);
+  color: #FAF6EE;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translateX(-50%) translateY(4px);
+  transition: all 0.2s ease;
+}
+
+.hotspot-pin:hover .hotspot-label-pill {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+

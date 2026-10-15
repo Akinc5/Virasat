@@ -4,6 +4,7 @@ import { HeritageHero } from "@/components/heritage/HeritageHero";
 import { HeritageInfo } from "@/components/heritage/HeritageInfo";
 import { HeritageTimeline } from "@/components/heritage/HeritageTimeline";
 import { HeritageGallery } from "@/components/heritage/HeritageGallery";
+import { HeritageBooks } from "@/components/heritage/HeritageBooks";
 import { RelatedSites } from "@/components/heritage/RelatedSites";
 import { Section } from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/Button";
@@ -149,8 +150,13 @@ export default async function HeritageDetailPage({ params }: PageProps) {
         </div>
       </Section>
 
+      {/* Recommended Books Section */}
+      <Section elevated id="books-section">
+        <HeritageBooks site={site} />
+      </Section>
+
       {/* Related sites */}
-      <Section elevated>
+      <Section>
         <RelatedSites sites={related} currentSiteId={site.id} />
       </Section>
     </div>
