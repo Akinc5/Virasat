@@ -79,6 +79,49 @@ NEXT_PUBLIC_STORAGE_URL="http://localhost:3000"
 | `DATABASE_URL` | PostgreSQL connection string | Yes (for DB features) |
 | `NEXT_PUBLIC_APP_URL` | App URL for OpenGraph/SEO | Yes |
 | `NEXT_PUBLIC_STORAGE_URL` | CDN/storage base URL | Yes |
+| `AUTH_SECRET` | Signing key for auth session cookies — generate with `openssl rand -base64 32` | Yes |
+| `AUTH_GOOGLE_ID` | Google OAuth client ID | Yes (for Google sign-in) |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret | Yes (for Google sign-in) |
+
+---
+
+## 🔐 Authentication (Google Sign-In)
+
+User accounts are handled by [Auth.js (NextAuth v5)](https://authjs.dev/) with Google as the only sign-in provider. Sessions are stateless JWTs stored in a signed cookie — **no database is required** to sign in. `session.user` gives you `id`, `name`, `email`, and `image`.
+
+### 1. Create a Google OAuth client
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → **Create Credentials** → **OAuth client ID**.
+2. Application type: **Web application**.
+3. Authorized redirect URI: `http://localhost:3000/api/auth/callback/google` (add your production URL's equivalent when deploying).
+4. Copy the generated **Client ID** and **Client secret**.
+
+### 2. Configure environment variables
+
+In `.env.local`:
+
+```env
+AUTH_SECRET="<openssl rand -base64 32>"
+AUTH_GOOGLE_ID="<your-client-id>"
+AUTH_GOOGLE_SECRET="<your-client-secret>"
+```
+
+A placeholder `.env.local` with a generated `AUTH_SECRET` already exists — just fill in the two Google values.
+
+### How it's wired up
+
+| File | Purpose |
+|------|---------|
+| `auth.ts` | Auth.js config — Google provider, JWT session, `signIn`/`signOut`/`auth` exports |
+| `app/api/auth/[...nextauth]/route.ts` | OAuth callback route handler |
+| `app/login/page.tsx` | Sign-in page ("Continue with Google") |
+| `components/auth/UserMenu.tsx` | Navbar avatar dropdown (client) — sign in/out UI |
+| `components/providers/SessionProvider.tsx` | Wraps the app so `useSession()` works client-side |
+| `proxy.ts` | Redirects unauthenticated visitors away from `/admin` (Next.js 16 renamed `middleware.ts` → `proxy.ts`) |
+
+To require sign-in on more routes, add them to the `matcher` in `proxy.ts`. To check the session on the server (in a Server Component, Route Handler, or Server Action), call `await auth()` from `@/auth`.
+
+To later persist real user rows (favorites, roles, etc.), connect a database, add `@auth/prisma-adapter` to `auth.ts`, and switch `session.strategy` to `"database"`.
 
 ---
 
