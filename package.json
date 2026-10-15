@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@prisma/client": "^7.9.1",
+    "@types/leaflet": "^1.9.22",
     "clsx": "^2.1.1",
     "google-tts-api": "^2.0.2",
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.32.0",
     "next": "16.3.1",
     "prisma": "^7.9.1",

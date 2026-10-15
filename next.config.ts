@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["192.168.88.8"],
   images: {
     // Allow external image domains for demo content
     remotePatterns: [

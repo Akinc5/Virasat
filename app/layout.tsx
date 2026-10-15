@@ -51,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
+    <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
       <head>
         {/* Preconnect for Google Fonts loaded in globals.css */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -61,7 +61,10 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-full flex flex-col antialiased bg-[var(--hv-bg-primary)] text-[var(--hv-text-primary)]">
+      <body 
+        className="min-h-full flex flex-col antialiased bg-[var(--hv-bg-primary)] text-[var(--hv-text-primary)]"
+        suppressHydrationWarning
+      >
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

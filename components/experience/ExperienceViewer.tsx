@@ -1,23 +1,19 @@
 "use client";
 
-// ============================================================
-// ExperienceViewer — 3D Model Viewer
-//
-// Renders a real Sketchfab embed when site.sketchfabModelId is set,
-// otherwise shows the animated placeholder.
-//
-// TO ADD A NATIVE 3D EXPERIENCE (Three.js):
-//  1. Install: npm install three @react-three/fiber @react-three/drei
-//  2. Replace the SketchfabViewer below with a <Canvas> component
-//  3. Load your .glb model using useGLTF from @react-three/drei
-// ============================================================
-
 import { useState, useEffect, useRef } from "react";
-import { Maximize2, Minimize2, RotateCcw, Info } from "lucide-react";
-import { Spinner } from "@/components/ui/Spinner";
+import { Maximize2, Minimize2, Box, Volume2, VolumeX } from "lucide-react";
 import { SketchfabViewer } from "@/components/experience/SketchfabViewer";
 import { cn } from "@/lib/utils";
 import type { HeritageSite } from "@/types";
+
+// Register custom HTML elements for TypeScript compilation safety
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "model-viewer": any;
+    }
+  }
+}
 
 interface ExperienceViewerProps {
   site: HeritageSite;
@@ -26,16 +22,30 @@ interface ExperienceViewerProps {
 
 export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [language, setLanguage] = useState<"en" | "hi" | "te" | "ta" | "ml">("en");
 
   const hasSketchfab = Boolean(site.sketchfabModelId);
-  const hasModel = site.threeDModels && site.threeDModels.length > 0;
-  const firstModel = hasModel ? site.threeDModels![0] : null;
+  const hasModel = Boolean(
+    site.threeDModels && site.threeDModels.length > 0 && site.threeDModels[0].modelUrl !== ""
+  );
+  const firstModel = site.threeDModels && site.threeDModels.length > 0 ? site.threeDModels[0] : null;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const cancelFlag = useRef(false);
+
+  // Load Google Model-Viewer script from CDN dynamically on client side if needed
+  useEffect(() => {
+    if (!hasSketchfab && hasModel) {
+      const existingScript = document.querySelector('script[src*="model-viewer"]');
+      if (!existingScript) {
+        const script = document.createElement("script");
+        script.type = "module";
+        script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
+        document.head.appendChild(script);
+      }
+    }
+  }, [hasSketchfab, hasModel]);
 
   // Cleanup speech synthesis on unmount
   useEffect(() => {
@@ -93,7 +103,6 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
       if (cancelFlag.current) break;
       
       const chunk = chunks[i];
-      // Use our local API proxy to completely bypass browser CORS/CORB restrictions
       const url = `/api/tts?text=${encodeURIComponent(chunk)}&lang=${lang}`;
       
       const audio = new Audio(url);
@@ -130,14 +139,11 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
     const langMap = { en: "en-IN", hi: "hi-IN", te: "te-IN", ta: "ta-IN", ml: "ml-IN" };
     const bcpTag = langMap[language];
     
-    // Always use Cloud Google TTS for Indian languages to guarantee playback
-    // since many devices lack local Telugu, Tamil, Malayalam voices.
     if (language !== "en") {
       playGoogleTTS(text, language);
       return;
     }
 
-    // Fallback to local SpeechSynthesis for English
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.9;
     utterance.lang = bcpTag;
@@ -152,31 +158,34 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
     window.speechSynthesis.speak(utterance);
   };
 
-  // ── Real Sketchfab embed ──────────────────────────────────
+  // Render State 1: Sketchfab Embed (High-fidelity textured model)
   if (hasSketchfab) {
     return (
       <div
         className={cn(
           "relative rounded-2xl overflow-hidden flex flex-col",
-          "bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)]",
+          "bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)] shadow-xl",
           isFullscreen && "fixed inset-0 z-50 rounded-none",
           className
         )}
+        role="region"
+        aria-label={`3D model for ${site.name}`}
       >
         <SketchfabViewer
           modelId={site.sketchfabModelId!}
           title={site.name}
-          className="flex-1 min-h-[400px]"
+          className="flex-1 min-h-[500px]"
         />
-        
+
+        {/* Audio Player Footer */}
         {firstModel?.audioDescriptionText && (
-          <div className="bg-black/20 p-4 border-t border-[var(--hv-bg-border)] flex flex-col sm:flex-row items-center justify-center gap-4 mt-auto">
+          <div className="bg-stone-950/80 backdrop-blur-md p-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-[var(--hv-text-primary)]">Language:</span>
+              <span className="text-xs font-medium text-stone-300">Narrator Language:</span>
               <select 
                 value={language}
                 onChange={(e) => setLanguage(e.target.value as any)}
-                className="bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)] rounded-md px-2 py-1 text-sm text-[var(--hv-text-primary)] focus:outline-none focus:border-amber-500"
+                className="bg-stone-900 border border-white/15 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-amber-500"
               >
                 <option value="en">English</option>
                 <option value="hi">हिंदी (Hindi)</option>
@@ -188,9 +197,24 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
             
             <button 
               onClick={toggleAudio}
-              className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full transition-colors font-medium text-sm flex items-center gap-2 shadow-lg shadow-amber-500/20"
+              className={cn(
+                "px-5 py-2 rounded-full font-medium text-xs flex items-center gap-2 transition-all shadow-md cursor-pointer",
+                isPlayingAudio 
+                  ? "bg-rose-600 hover:bg-rose-700 text-white" 
+                  : "bg-amber-600 hover:bg-amber-500 text-white shadow-amber-500/20"
+              )}
             >
-              {isPlayingAudio ? "Stop Audio" : "Play Description"}
+              {isPlayingAudio ? (
+                <>
+                  <VolumeX size={14} />
+                  <span>Stop Narration</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={14} />
+                  <span>Play Site Audio Guide</span>
+                </>
+              )}
             </button>
           </div>
         )}
@@ -198,126 +222,123 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
     );
   }
 
-  // ── Placeholder for sites without a model ────────────────
+  // Render State 2: Model-Viewer (if only local GLB is available)
+  if (hasModel && firstModel) {
+    return (
+      <div
+        className={cn(
+          "relative rounded-2xl overflow-hidden flex flex-col",
+          "bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)] shadow-xl",
+          isFullscreen && "fixed inset-0 z-50 rounded-none",
+          className
+        )}
+        role="region"
+        aria-label={`3D viewer for ${site.name}`}
+      >
+        <div className="flex-1 min-h-[500px] relative bg-stone-900/60">
+          <model-viewer
+            src={firstModel.modelUrl}
+            alt={`Interactive 3D model of ${site.name}`}
+            camera-controls
+            auto-rotate
+            rotation-per-second="15deg"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            shadow-intensity="1.5"
+            style={{ width: "100%", height: "100%", minHeight: "500px", display: "block" }}
+          >
+            <button
+              slot="ar-button"
+              className="absolute bottom-4 right-4 bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-full font-medium text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 z-20 cursor-pointer"
+            >
+              <Box size={14} />
+              View in AR
+            </button>
+          </model-viewer>
+
+          {/* Fullscreen control */}
+          <div className="absolute top-4 right-4 z-20">
+            <button
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="w-9 h-9 rounded-lg bg-black/60 hover:bg-black/80 flex items-center justify-center text-white/80 hover:text-white transition-all cursor-pointer backdrop-blur-md border border-white/10"
+              aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+            >
+              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Audio Player Footer */}
+        {firstModel.audioDescriptionText && (
+          <div className="bg-stone-950/80 backdrop-blur-md p-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-stone-300">Narrator Language:</span>
+              <select 
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as any)}
+                className="bg-stone-900 border border-white/15 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-amber-500"
+              >
+                <option value="en">English</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+                <option value="ml">മലയാളം (Malayalam)</option>
+              </select>
+            </div>
+            
+            <button 
+              onClick={toggleAudio}
+              className={cn(
+                "px-5 py-2 rounded-full font-medium text-xs flex items-center gap-2 transition-all shadow-md cursor-pointer",
+                isPlayingAudio 
+                  ? "bg-rose-600 hover:bg-rose-700 text-white" 
+                  : "bg-amber-600 hover:bg-amber-500 text-white shadow-amber-500/20"
+              )}
+            >
+              {isPlayingAudio ? (
+                <>
+                  <VolumeX size={14} />
+                  <span>Stop Narration</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={14} />
+                  <span>Play Site Audio Guide</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Render State 3: Coming soon fallback
   return (
     <div
       className={cn(
-        "relative rounded-2xl overflow-hidden",
+        "relative rounded-2xl overflow-hidden flex flex-col",
         "bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)]",
         isFullscreen && "fixed inset-0 z-50 rounded-none",
         className
       )}
       role="region"
-      aria-label={`3D viewer for ${site.name}`}
+      aria-label={`3D coming soon for ${site.name}`}
     >
-      {/* Viewer Area */}
-      <div className="aspect-video relative flex items-center justify-center min-h-[400px]">
-        {isLoading ? (
-          <Spinner size="lg" label="Loading 3D model…" />
-        ) : (
-          <>
-            {/* ── REPLACE THIS SECTION WITH <Canvas> FOR REAL 3D ── */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              {/* Decorative grid */}
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(212,160,23,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(212,160,23,0.4) 1px, transparent 1px)",
-                  backgroundSize: "40px 40px",
-                }}
-                aria-hidden="true"
-              />
-
-              {/* Rotating placeholder object */}
-              <div className="relative">
-                <div
-                  className="w-40 h-40 rounded-full border-2 border-amber-500/30 flex items-center justify-center"
-                  aria-hidden="true"
-                >
-                  <div className="w-28 h-28 rounded-full border-2 border-amber-500/50 flex items-center justify-center animate-spin"
-                    style={{ animationDuration: "8s" }}>
-                    <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-400/40" />
-                  </div>
-                </div>
-                {/* Orbit ring */}
-                <div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border border-amber-500/20 animate-spin"
-                  style={{ animationDuration: "12s", animationDirection: "reverse" }}
-                  aria-hidden="true"
-                />
-              </div>
-
-              <div className="mt-8 text-center z-10">
-                <p className="font-display text-xl font-semibold text-[var(--hv-text-primary)] mb-2">
-                  {site.name}
-                </p>
-                <p className="text-sm text-[var(--hv-text-muted)] mb-1">
-                  3D model not yet available for this site
-                </p>
-                <p className="text-xs text-amber-500/70 font-mono">
-                  {/* Extension point marker for developers */}
-                  {"/* Three.js Canvas goes here */"}
-                </p>
-              </div>
-            </div>
-            {/* ── END PLACEHOLDER ── */}
-          </>
-        )}
-
-        {/* Top Controls */}
-        <div className="absolute top-4 right-4 flex gap-2">
-          <button
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="w-9 h-9 rounded-lg glass-card hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all"
-            aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-          >
-            {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-          </button>
-          <button
-            onClick={() => setIsLoading(true)}
-            className="w-9 h-9 rounded-lg glass-card hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all"
-            aria-label="Reset view"
-          >
-            <RotateCcw size={16} />
-          </button>
+      <div className="aspect-video relative flex flex-col items-center justify-center min-h-[450px] p-6 text-center">
+        <div className="w-20 h-20 rounded-full border border-amber-500/30 flex items-center justify-center animate-pulse mb-4">
+          <Box size={32} className="text-amber-500" />
         </div>
-
-        {/* Info badge */}
-        <div className="absolute bottom-4 left-4 flex items-center gap-2 glass-card px-3 py-1.5 rounded-lg">
-          <Info size={13} className="text-amber-400" />
-          <span className="text-xs text-[var(--hv-text-muted)]">
-            3D experience placeholder — see README for integration guide
-          </span>
-        </div>
+        <span className="text-xs uppercase font-semibold text-amber-500 tracking-wider mb-2">
+          3D Walkthrough In Production
+        </span>
+        <h3 className="font-display text-2xl font-bold text-[var(--hv-text-primary)] mb-2">
+          {site.name}
+        </h3>
+        <p className="text-sm text-[var(--hv-text-muted)] max-w-md">
+          High-density photogrammetry scans are being processed for this site.
+        </p>
       </div>
-
-      {firstModel?.audioDescriptionText && (
-        <div className="bg-black/20 p-4 border-t border-[var(--hv-bg-border)] flex flex-col sm:flex-row items-center justify-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-[var(--hv-text-primary)]">Language:</span>
-            <select 
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as any)}
-              className="bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)] rounded-md px-2 py-1 text-sm text-[var(--hv-text-primary)] focus:outline-none focus:border-amber-500"
-            >
-              <option value="en">English</option>
-              <option value="hi">हिंदी (Hindi)</option>
-              <option value="te">తెలుగు (Telugu)</option>
-              <option value="ta">தமிழ் (Tamil)</option>
-              <option value="ml">മലയാളം (Malayalam)</option>
-            </select>
-          </div>
-          
-          <button 
-            onClick={toggleAudio}
-            className="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full transition-colors font-medium text-sm flex items-center gap-2 shadow-lg shadow-amber-500/20"
-          >
-            {isPlayingAudio ? "Stop Audio" : "Play Description"}
-          </button>
-        </div>
-      )}
     </div>
   );
 }
-

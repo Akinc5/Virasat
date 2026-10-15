@@ -24,7 +24,7 @@ export function SketchfabViewer({ modelId, title, className }: SketchfabViewerPr
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const embedUrl = `https://sketchfab.com/models/${modelId}/embed?autospin=0.2&autostart=1&ui_theme=dark&ui_infos=0&ui_watermark_link=0`;
+  const embedUrl = `https://sketchfab.com/models/${modelId}/embed?autospin=0.2&autostart=1&ui_theme=dark&ui_infos=0&ui_watermark_link=0&xr_compatible=1`;
   const modelUrl = `https://sketchfab.com/3d-models/${modelId}`;
 
   return (

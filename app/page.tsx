@@ -3,6 +3,8 @@ import Image from "next/image";
 import { ArrowRight, Globe, Shield, Eye, Layers } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { HeritageCard } from "@/components/heritage/HeritageCard";
+import { TajMahalHeroFrame } from "@/components/heritage/TajMahalHeroFrame";
+import { HeritageFlashcards } from "@/components/heritage/HeritageFlashcards";
 import { Section, SectionHeader } from "@/components/layout/PageWrapper";
 import { getFeaturedSites, sampleHeritageSites } from "@/data/sample-heritage-sites";
 import type { Metadata } from "next";
@@ -134,33 +136,24 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Portal-Style Arched Image Frame in Archival Catalog layout */}
+            {/* Right Column: Interactive Portal Taj Mahal with Hover Pop-up & 3D explore */}
             <div className="lg:col-span-5 flex flex-col justify-center items-center">
-              <div className="w-full max-w-sm bg-[var(--hv-bg-card)] border border-[var(--hv-bg-border)] p-4 shadow-sm hover:shadow-md transition-all duration-500 rounded-sm">
-                <div className="aspect-[4/5] relative arch-frame p-2 bg-[var(--hv-bg-secondary)]">
-                  <div className="arch-image-mask w-full h-full relative">
-                    <Image
-                      src="/images/hero-bg.jpg"
-                      alt="Taj Mahal at dawn — Indian architectural heritage"
-                      fill
-                      className="object-cover object-center"
-                      priority
-                      sizes="(max-width: 768px) 100vw, 40vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--hv-bg-primary)]/10 via-transparent to-transparent" />
-                  </div>
-                </div>
-                <div className="mt-3.5 text-center border-t border-[var(--hv-bg-border)] pt-2.5">
-                  <span className="text-[8px] font-mono text-[var(--hv-text-secondary)] uppercase tracking-[0.25em]">
-                    PLATE I. SUBCONTINENTAL ARCHITECTURAL PROJECTION
-                  </span>
-                </div>
-              </div>
+              <TajMahalHeroFrame />
             </div>
 
           </div>
         </div>
       </section>
+
+      {/* ── HERITAGE FLASHCARDS SECTION ──────────────────────── */}
+      <Section id="heritage-flashcards" className="border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]/40">
+        <SectionHeader
+          eyebrow="Interactive Discovery Deck"
+          title="Heritage Flashcards"
+          subtitle="Flip through all iconic monuments to uncover architectural secrets, mathematical symmetry, and direct 3D portals."
+        />
+        <HeritageFlashcards sites={allSites} />
+      </Section>
 
       {/* ── FEATURED SITES ───────────────────────────────────── */}
       <Section id="featured-sites" className="border-t border-[var(--hv-bg-border)]">
