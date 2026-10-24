@@ -6,15 +6,6 @@ import { SketchfabViewer } from "@/components/experience/SketchfabViewer";
 import { cn } from "@/lib/utils";
 import type { HeritageSite } from "@/types";
 
-// Register custom HTML elements for TypeScript compilation safety
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "model-viewer": any;
-    }
-  }
-}
-
 interface ExperienceViewerProps {
   site: HeritageSite;
   className?: string;
