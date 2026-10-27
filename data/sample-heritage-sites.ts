@@ -95,6 +95,8 @@ export const sampleHeritageSites: HeritageSite[] = [
         id: "model_01",
         heritageSiteId: "site_01",
         modelUrl: "/models/taj-mahal.glb",
+        source: "blender",
+        displayScale: 0.01,
         format: "glb",
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-01"),

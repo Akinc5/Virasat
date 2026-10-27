@@ -80,6 +80,11 @@ export interface ThreeDModel {
   id: string;
   heritageSiteId: string;
   modelUrl: string;
+  // "blender" = built by blender/monuments/*.py and preferred over Sketchfab
+  source?: "blender" | "placeholder";
+  // Uniform scale applied in the viewer and AR (Blender models are 1 unit = 1 m,
+  // so e.g. 0.01 turns the 96 m Taj Mahal plinth into a ~1 m tabletop model)
+  displayScale?: number;
   thumbnailUrl?: string;
   format: ModelFormat;
   fileSize?: number;
