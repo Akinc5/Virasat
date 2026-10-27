@@ -250,6 +250,8 @@ export const sampleHeritageSites: HeritageSite[] = [
         id: "model_03",
         heritageSiteId: "site_03",
         modelUrl: "/models/konark.glb",
+        source: "blender",
+        displayScale: 0.009,
         format: "glb",
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-01"),

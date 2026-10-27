@@ -217,6 +217,8 @@ TEXTURES = {
     "chevron": ("tex_chevron", "jpg", lambda: _motifs().chevron_rgb()),
     "rope": ("tex_rope", "jpg", lambda: _motifs().rope_rgb()),
     "railing": ("tex_railing_panel", "jpg", lambda: _motifs().railing_rgb()),
+    "khondalite": ("tex_khondalite", "jpg", lambda: _motifs().khondalite_rgb()),
+    "relief": ("tex_khondalite_relief", "jpg", lambda: _motifs().relief_rgb()),
     "band": ("tex_band", "jpg", band_rgb),
     "jali": ("tex_jali", "png", jali_rgba),
     "sandstone": ("tex_red_sandstone", "jpg", sandstone_rgb),

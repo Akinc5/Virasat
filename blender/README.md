@@ -9,7 +9,8 @@ blender/
   lib/common.py      scene, collections, materials, geometry generators, UVs, booleans, export
   lib/arch.py        façade frames, pointed and cusped Mughal arches, recesses, mouldings, spandrels
   lib/textures.py    texture cache + base marble / jali / sandstone generators
-  lib/motifs.py      inlay motif library (vector-style canvas → tileable textures)
+  lib/motifs.py      inlay motif library (vector-style canvas → tileable textures), khondalite + relief
+  lib/presentation.py shared studio turntable, sky lighting, cameras, render loop
   monuments/*.py     one script per monument → public/models/<name>.glb
   preview.py         quick render of any exported GLB
   build.mjs          runs every monument script (npm run models)
@@ -177,3 +178,59 @@ their first ring.
   phones, but a lighter variant could drop the posts, brackets and panels.
 - **Interior** (cenotaphs, screen, inner dome) and the minaret lean are not
   modelled.
+
+
+---
+
+# Konark Sun Temple
+
+`monuments/konark.py` → `public/models/konark.glb` (about 103k triangles,
+790 KB, 4 materials). The full build also saves
+`out/Konark_Sun_Temple.blend` and the renders:
+
+```bash
+"C:/Program Files/Blender Foundation/Blender 4.5/blender.exe" -b --factory-startup   -P blender/monuments/konark.py -- --renders blender/out/renders_konark
+```
+
+Cameras: `hero`, `front` (from the east), `side`, `elevated`, `tower`,
+`wheel`, `horses`, `mandapa`. In the viewer and AR it's shown at
+`displayScale` 0.009 (1.06 × 0.37 × 0.49 m). +X is east, the direction the
+chariot faces.
+
+| Collection | Contents |
+|------------|----------|
+| `Konark_Pitha` | chariot platform (jagamohana square + narrower deul square), moulded base, carved body, cornice; **24 wheels** (8 thick + 8 thin spokes, spoke medallions, hub, rim moulding) spaced around the stairs; east, north and south staircases with sloping side walls |
+| `Konark_Jagamohana` | pancharatha walls (pabhaga mouldings, two carved jangha registers, bandhana, baranda); three projecting doorframes, stone-filled as today; **pidha roof** of 6 + 5 + 4 sloped slabs on recessed cores, two terraces of standing figures; crown with beki (neck), ghanta (bell), ribbed amalaka and kalasha |
+| `Konark_Deul` | ruined sanctuary base: mouldings, carved wall broken open by separate boolean cuts, hollow sanctum; Surya shrines on the N, S and W faces with green-chlorite figures |
+| `Konark_Mandapa` | natya mandapa (dance hall) to the east: pancharatha platform, east and west stairs, 16 pillars on a 4 × 4 grid, some broken, intact ones with bracket capitals; no roof |
+| `Konark_Horses` | seven stylised harnessed horses (spline-swept tubes: barrel, arched neck with mane, head, ears, legs, hooves, tail, caparison band) flanking the east stairs |
+
+Materials (`lib/motifs.py`): `khondalite` (coursed blocks with rain streaks
+and patchy weathering), `khondalite_carved` (embossed registers of figure
+niches and rosette medallions), `khondalite_weathered`, `green_chlorite`.
+The carving texture evokes the density of Konark's friezes; it doesn't copy
+any panel.
+
+## Konark assumptions
+
+| Element | Value used | Basis |
+|---------|-----------|-------|
+| Orientation | chariot faces east | published |
+| Jagamohana | walls 28 m square + projections, about 41.5 m to the kalasha | published ~39 m surviving height (crown slightly taller here) |
+| Platform | 4.5 m high; jagamohana part 42 m square, deul part 34 m | photo proportion |
+| Wheels | 24, about 3 m across, 8 major + 8 minor spokes | published (≈ 9 ft 9 in) |
+| Horses | seven, at the east stairs (four north, three south) | published count; placement simplified |
+| Deul | collapsed; base walls about 9 m, broken | ruin state approximated |
+| Natya mandapa | 20 m square platform, 4 m high, about 10 m east of the stairs | photo proportion |
+
+## Konark limitations
+
+- **Horses** are stylised: the real ones rear, wear rich ornament, and some
+  trample figures.
+- **Carving is a texture.** There are no sculpted figures except the
+  abstracted terrace and shrine statues. The erotic and narrative panels are
+  not modelled.
+- **Not modelled:** the gajasimha (lion on elephant) guardians at the mandapa
+  stairs, the Mayadevi temple, the bhoga mandapa, and the enclosure wall.
+- **Roof cores** show as dark vertical slots at the ratha steps between the
+  pidha slabs.

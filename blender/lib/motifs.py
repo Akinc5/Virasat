@@ -266,13 +266,14 @@ def railing_rgb(w=512, h=256):
     return col
 
 
-def ashlar_rgb(size=1024, rows=8, seed=5, joint=(0.36, 0.35, 0.34)):
+def ashlar_rgb(size=1024, rows=8, seed=5, joint=(0.36, 0.35, 0.34), base=(0.90, 0.88, 0.83),
+               veins=0.9, tone_sd=0.03):
     """
-    Coursed marble: random block lengths per course (tileable), each block
+    Coursed stone: random block lengths per course (tileable), each block
     with its own tone, warmth and vein layer, separated by thin dark joints.
     """
     rng = np.random.default_rng(seed)
-    layers = [tx.marble_rgb(size, size, seed + i * 7, veins=0.9 + 0.3 * i) for i in range(3)]
+    layers = [tx.marble_rgb(size, size, seed + i * 7, base=base, veins=veins + 0.3 * i) for i in range(3)]
     out = np.zeros((size, size, 3), np.float32)
     jmask = np.zeros((size, size), np.float32)
     rh = size / rows
@@ -288,7 +289,7 @@ def ashlar_rgb(size=1024, rows=8, seed=5, joint=(0.36, 0.35, 0.34)):
         for L in lengths:
             L *= scale
             cols = (np.arange(int(round(x)), int(round(x + L)))) % size
-            tone = 1 + rng.normal(0, 0.03)
+            tone = 1 + rng.normal(0, tone_sd)
             warm = rng.normal(0, 1)
             layer = layers[rng.integers(0, 3)]
             block = layer[y0:y1][:, cols] * tone
@@ -300,3 +301,74 @@ def ashlar_rgb(size=1024, rows=8, seed=5, joint=(0.36, 0.35, 0.34)):
         jmask[y0:y0 + 2, :] = 1
     _ = xs
     return tx._mix(out, jmask * 0.85, joint)
+
+
+# ------------------------------------------------------------------
+# Konark: khondalite stone and carved relief
+# ------------------------------------------------------------------
+KHONDALITE = (0.50, 0.43, 0.35)
+
+
+def _weathering(size, seed):
+    """Vertical rain streaks and patchy darkening, tileable."""
+    streak = tx._fbm(size, size, 2.4, seed)
+    streak = np.repeat(streak[::8, :], 8, axis=0)[:size]  # stretch vertically
+    patch = tx._fbm(size, size, 2.8, seed + 1)
+    return 1 - 0.16 * np.clip(streak - 0.45, 0, 1) * 2 - 0.10 * np.clip(patch - 0.5, 0, 1) * 2
+
+
+def khondalite_rgb(size=1024, seed=91):
+    """Coursed khondalite blocks with weathering (pidha slabs, mouldings)."""
+    col = ashlar_rgb(size, rows=6, seed=seed, joint=(0.22, 0.19, 0.16), base=KHONDALITE, veins=0.15,
+                     tone_sd=0.06)
+    return col * _weathering(size, seed)[..., None]
+
+
+def relief_rgb(size=1024, seed=95):
+    """
+    Carved frieze registers for Kalinga walls: rows of niche panels holding
+    figure silhouettes, alternating with rosette medallions and scroll bands.
+    Rendered as an emboss (shadow below, highlight above) on khondalite.
+    A generic evocation of Konark's carving density, not a copy of any panel.
+    """
+    base = tx.marble_rgb(size, size, seed, base=KHONDALITE, veins=0.1)
+    cv = Canvas(size, size, np.zeros((size, size, 3), np.float32))
+    W = (1, 1, 1)
+    rows = 4
+    rh = size / rows
+    for r in range(rows):
+        y0 = r * rh
+        cv.stroke([(0, y0 + 4), (size, y0 + 4)], 5, W)
+        cv.stroke([(0, y0 + rh - 6), (size, y0 + rh - 6)], 3, W)
+        if r % 2 == 0:
+            n = 8
+            pw = size / n
+            for k in range(n):
+                x0 = k * pw
+                # Niche: pilasters, arched top, figure (body + head + arms).
+                cv.stroke([(x0 + 0.12 * pw, y0 + 0.88 * rh), (x0 + 0.12 * pw, y0 + 0.3 * rh)], 4, W)
+                cv.stroke([(x0 + 0.88 * pw, y0 + 0.88 * rh), (x0 + 0.88 * pw, y0 + 0.3 * rh)], 4, W)
+                arc = [(x0 + pw / 2 + 0.38 * pw * math.cos(t), y0 + 0.3 * rh - 0.16 * rh * math.sin(t))
+                       for t in np.linspace(math.pi, 0, 20)]
+                cv.stroke(arc, 4, W)
+                cx = x0 + pw / 2
+                lean = 0.06 * pw * (1 if k % 2 else -1)
+                cv.leaf(cx, y0 + 0.86 * rh, -math.pi / 2 + lean / pw, 0.42 * rh, 0.16 * pw, W, bend=0.1, vein=False)
+                cv.disc(cx + lean, y0 + 0.38 * rh, 0.055 * rh, W)
+                cv.stroke([(cx - 0.18 * pw, y0 + 0.5 * rh), (cx, y0 + 0.55 * rh), (cx + 0.2 * pw, y0 + 0.46 * rh)], 4, W)
+        else:
+            n = 6
+            pw = size / n
+            for k in range(n):
+                cx, cy = k * pw + pw / 2, y0 + rh / 2
+                ring = [(cx + 0.36 * rh * math.cos(t), cy + 0.36 * rh * math.sin(t)) for t in np.linspace(0, 2 * math.pi, 40)]
+                cv.stroke(ring, 4, W)
+                cv.rosette(cx, cy, 0.26 * rh, 12, W, W)
+                sx = k * pw
+                cv.stroke([(sx - 0.1 * pw, cy + 0.25 * rh * math.sin(t * 6)) if False else
+                           (sx + 0.5 * pw * (t - 0.5) * 0.4, cy + 0.2 * rh * math.sin(t * 2 * math.pi))
+                           for t in np.linspace(0, 1, 20)], 3, W)
+    m = cv.img[..., 0]
+    up, down = np.roll(m, -2, axis=0), np.roll(m, 2, axis=0)
+    shade = 1 - 0.30 * np.clip(down - m, 0, 1) + 0.18 * np.clip(up - m, 0, 1) - 0.08 * m
+    return base * shade[..., None] * _weathering(size, seed)[..., None]
