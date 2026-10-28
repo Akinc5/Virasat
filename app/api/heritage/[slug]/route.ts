@@ -23,7 +23,7 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
     }
 
     return NextResponse.json(site);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch heritage site" },
       { status: 500 }

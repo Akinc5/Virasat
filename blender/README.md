@@ -234,3 +234,22 @@ any panel.
   stairs, the Mayadevi temple, the bhoga mandapa, and the enclosure wall.
 - **Roof cores** show as dark vertical slots at the ratha steps between the
   pidha slabs.
+
+## Third-party models and scans (`blender/scans/`)
+
+`build_scans.py` turns downloaded glTF models into web GLBs: it drops the
+duplicate primitives that captured files carry, stands them upright, binds
+textures (the Taj Mahal capture ships 19 maps with no assignments — see
+`TAJ_MATERIALS`), welds and decimates to a web budget, scales to metres and
+exports Draco GLBs with resized JPEG textures.
+
+```bash
+blender -b --python blender/scans/build_scans.py -- <name> <source.gltf> public/models/<name>-scan.glb <preview.png>
+```
+
+`<name>` is a key of `MODELS` (`taj-mahal`, `hampi`, `ajanta`, `ellora`, `red-fort`).
+The Red Fort source ships flat colours only; the script replaces them with
+red sandstone, marble, paving, lawn and flag textures from `blender/lib/textures.py`
+(see `RED_FORT_MATERIALS`) and box-maps them at real-world scale.
+Source files stay outside the repo. The site labels every model "Prepared in
+Blender by Virasat"; the model authors asked not to be credited by name.

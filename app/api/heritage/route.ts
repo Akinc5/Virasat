@@ -20,11 +20,11 @@ export async function GET(request: NextRequest) {
     // Build filter object from query params
     const filters: HeritageSiteFilters = {
       state: searchParams.get("state") ?? undefined,
-      region: (searchParams.get("region") as any) ?? undefined,
-      historicalPeriod: (searchParams.get("historicalPeriod") as any) ?? undefined,
-      architecturalStyle: (searchParams.get("architecturalStyle") as any) ?? undefined,
-      category: (searchParams.get("category") as any) ?? undefined,
-      unescoStatus: (searchParams.get("unescoStatus") as any) ?? undefined,
+      region: (searchParams.get("region") as HeritageSiteFilters["region"]) ?? undefined,
+      historicalPeriod: (searchParams.get("historicalPeriod") as HeritageSiteFilters["historicalPeriod"]) ?? undefined,
+      architecturalStyle: (searchParams.get("architecturalStyle") as HeritageSiteFilters["architecturalStyle"]) ?? undefined,
+      category: (searchParams.get("category") as HeritageSiteFilters["category"]) ?? undefined,
+      unescoStatus: (searchParams.get("unescoStatus") as HeritageSiteFilters["unescoStatus"]) ?? undefined,
     };
 
     const hasFilters = Object.values(filters).some(Boolean);

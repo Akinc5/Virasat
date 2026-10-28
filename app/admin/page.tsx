@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/Button";
 import { sampleHeritageSites } from "@/data/sample-heritage-sites";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard — HeritageVerse",
+  title: "Admin Dashboard — Virasat",
   description: "Heritage Verse admin dashboard — manage heritage sites, media, 3D models, users, and analytics.",
 };
 
@@ -80,7 +80,7 @@ export default function AdminPage() {
             Admin Console
           </p>
           <p className="text-sm font-display font-bold text-[var(--hv-text-primary)] mt-0.5">
-            HeritageVerse
+            Virasat
           </p>
         </div>
 

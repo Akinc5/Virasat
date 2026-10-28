@@ -50,7 +50,8 @@ interface SearchInputProps extends Omit<InputProps, "leftIcon"> {
   onClear?: () => void;
 }
 
-export function SearchInput({ onClear, ...props }: SearchInputProps) {
+// onClear is reserved for a clear button; keep it off the <input>
+export function SearchInput({ onClear: _onClear, ...props }: SearchInputProps) {
   return (
     <Input
       leftIcon={<Search size={16} />}

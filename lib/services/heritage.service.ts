@@ -135,7 +135,7 @@ export async function getRelatedSites(
  * TODO: Implement with prisma.heritageSite.create()
  */
 export async function createHeritageSite(
-  data: Omit<HeritageSite, "id" | "createdAt" | "updatedAt">
+  _data: Omit<HeritageSite, "id" | "createdAt" | "updatedAt">
 ): Promise<HeritageSite> {
   throw new Error("createHeritageSite: Database not connected yet.");
 }
@@ -145,8 +145,8 @@ export async function createHeritageSite(
  * TODO: Implement with prisma.heritageSite.update()
  */
 export async function updateHeritageSite(
-  id: string,
-  data: Partial<HeritageSite>
+  _id: string,
+  _data: Partial<HeritageSite>
 ): Promise<HeritageSite> {
   throw new Error("updateHeritageSite: Database not connected yet.");
 }
@@ -155,6 +155,6 @@ export async function updateHeritageSite(
  * Delete a heritage site.
  * TODO: Implement with prisma.heritageSite.delete()
  */
-export async function deleteHeritageSite(id: string): Promise<void> {
+export async function deleteHeritageSite(_id: string): Promise<void> {
   throw new Error("deleteHeritageSite: Database not connected yet.");
 }

@@ -99,7 +99,7 @@ export function HeritageBooks({ site }: HeritageBooksProps) {
                     <span>Why It Matters</span>
                   </div>
                   <p className="text-[11px] text-[var(--hv-text-secondary)] font-serif italic leading-relaxed">
-                    "{book.whyRead}"
+                    &quot;{book.whyRead}&quot;
                   </p>
                 </div>
 

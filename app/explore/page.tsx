@@ -72,7 +72,7 @@ export default function ExplorePage() {
               Heritage Directory
             </p>
             <h1 className="font-display text-3xl md:text-4xl font-bold text-[var(--hv-text-primary)] mb-3">
-              Explore India's Heritage
+              Explore India&apos;s Heritage
             </h1>
             <p className="text-[var(--hv-text-secondary)] text-sm leading-relaxed">
               Discover temples, forts, caves, and monuments spanning thousands of years of Indian civilization.
@@ -130,35 +130,35 @@ export default function ExplorePage() {
               label="Region"
               options={REGIONS}
               value={filters.region ?? ""}
-              onChange={(e) => updateFilter("region", e.target.value as any)}
+              onChange={(e) => updateFilter("region", e.target.value)}
             />
             <Select
               id="filter-period"
               label="Period"
               options={HISTORICAL_PERIODS}
               value={filters.historicalPeriod ?? ""}
-              onChange={(e) => updateFilter("historicalPeriod", e.target.value as any)}
+              onChange={(e) => updateFilter("historicalPeriod", e.target.value)}
             />
             <Select
               id="filter-style"
               label="Architecture"
               options={ARCHITECTURAL_STYLES}
               value={filters.architecturalStyle ?? ""}
-              onChange={(e) => updateFilter("architecturalStyle", e.target.value as any)}
+              onChange={(e) => updateFilter("architecturalStyle", e.target.value)}
             />
             <Select
               id="filter-category"
               label="Category"
               options={HERITAGE_CATEGORIES}
               value={filters.category ?? ""}
-              onChange={(e) => updateFilter("category", e.target.value as any)}
+              onChange={(e) => updateFilter("category", e.target.value)}
             />
             <Select
               id="filter-unesco"
               label="UNESCO"
               options={UNESCO_STATUSES}
               value={filters.unescoStatus ?? ""}
-              onChange={(e) => updateFilter("unescoStatus", e.target.value as any)}
+              onChange={(e) => updateFilter("unescoStatus", e.target.value)}
             />
           </div>
         )}

@@ -13,8 +13,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "HeritageVerse — Digital Preservation of India's Cultural Heritage",
-    template: "%s | HeritageVerse",
+    default: "Virasat — Digital Preservation of India's Cultural Heritage",
+    template: "%s | Virasat",
   },
   description:
     "Explore India's most iconic heritage sites through immersive digital experiences. Discover temples, forts, caves, and monuments through interactive web, AR, and VR.",
@@ -29,19 +29,19 @@ export const metadata: Metadata = {
     "VR",
     "3D experience",
   ],
-  authors: [{ name: "HeritageVerse Team" }],
+  authors: [{ name: "Virasat Team" }],
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: process.env.NEXT_PUBLIC_APP_URL ?? "https://heritageverse.in",
-    siteName: "HeritageVerse",
-    title: "HeritageVerse — Digital Preservation of India's Cultural Heritage",
+    siteName: "Virasat",
+    title: "Virasat — Digital Preservation of India's Cultural Heritage",
     description:
       "Explore India's most iconic heritage sites through immersive digital experiences.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "HeritageVerse",
+    title: "Virasat",
     description: "Explore India's Cultural Heritage Digitally",
   },
 };

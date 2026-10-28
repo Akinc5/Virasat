@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 blender/out/
 __pycache__/
+
+# local account store (lib/auth/users.ts)
+.data/

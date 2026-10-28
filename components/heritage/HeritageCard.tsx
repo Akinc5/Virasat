@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { cn } from "@/lib/utils";
+import { realModels, hasTour } from "@/lib/models";
 import type { HeritageCardProps } from "@/types";
 
 export function HeritageCard({
@@ -170,12 +170,17 @@ export function HeritageCard({
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--hv-bg-primary)]/40 to-transparent" />
-        <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
+        <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap max-w-[calc(100%-6.5rem)]">
           <Badge label={site.category} variant="category" />
           {site.unescoStatus === "World Heritage Site" && (
             <Badge label="UNESCO" variant="unesco" />
           )}
         </div>
+        {realModels(site).length > 0 && (
+          <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide bg-[var(--hv-text-primary)]/85 text-[var(--hv-bg-primary)] backdrop-blur-sm">
+            {hasTour(site) ? "3D · AR · Tour" : "3D · AR"}
+          </span>
+        )}
       </div>
 
       {/* Content */}

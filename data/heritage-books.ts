@@ -252,4 +252,51 @@ export const HERITAGE_BOOKS: Record<string, HeritageBook[]> = {
       googleBooksQuery: "Caves of Ellora Carmel Berkson Mapin",
     },
   ],
+  "red-fort": [
+    {
+      id: "redfort-book-1",
+      siteSlug: "red-fort",
+      title: "The Last Mughal: The Fall of a Dynasty, Delhi 1857",
+      author: "William Dalrymple",
+      year: 2006,
+      publisher: "Bloomsbury",
+      badge: "Historical Classic",
+      description:
+        "A narrative history of the final years of the Mughal court inside the Red Fort and the siege of Delhi during the Revolt of 1857.",
+      whyRead:
+        "Built on thousands of Persian and Urdu documents, it shows daily life in the fort and why its capture in 1857 ended the Mughal empire.",
+      keyTopics: ["Bahadur Shah Zafar", "Revolt of 1857", "Mughal Court", "Shahjahanabad"],
+      googleBooksQuery: "The Last Mughal William Dalrymple",
+    },
+    {
+      id: "redfort-book-2",
+      siteSlug: "red-fort",
+      title: "Mughal Architecture: An Outline of Its History and Development (1526–1858)",
+      author: "Ebba Koch",
+      year: 1991,
+      publisher: "Prestel",
+      badge: "Architectural Survey",
+      description:
+        "A concise survey of Mughal building from Babur to the end of the empire, including Shah Jahan's palaces at Delhi.",
+      whyRead:
+        "Places the Red Fort's halls of audience and marble pavilions within the wider development of Mughal palace design.",
+      keyTopics: ["Shah Jahan", "Palace Architecture", "Diwan-i-Am", "Diwan-i-Khas"],
+      googleBooksQuery: "Mughal Architecture Ebba Koch outline",
+    },
+    {
+      id: "redfort-book-3",
+      siteSlug: "red-fort",
+      title: "Chandni Chowk: The Mughal City of Old Delhi",
+      author: "Swapna Liddle",
+      year: 2017,
+      publisher: "Speaking Tiger",
+      badge: "Historical Classic",
+      description:
+        "A history of Shahjahanabad, the walled city that grew around the Red Fort, from its founding to the present day.",
+      whyRead:
+        "Explains how the fort, the great mosque and the market streets were planned together as one imperial capital.",
+      keyTopics: ["Shahjahanabad", "Urban History", "Old Delhi", "Mughal Capital"],
+      googleBooksQuery: "Chandni Chowk Mughal City of Old Delhi Swapna Liddle",
+    },
+  ],
 };

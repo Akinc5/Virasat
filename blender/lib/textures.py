@@ -182,6 +182,44 @@ def sandstone_rgb(size=512, seed=21):
     return _joints(col, size // 4, size // 2, 1.0, (0.55, 0.36, 0.29), 0.35)
 
 
+def grass_rgb(size=512, seed=31):
+    """Mown lawn: fine blade noise over broad patches of lighter and darker green."""
+    fine, broad = _fbm(size, size, 0.6, seed), _fbm(size, size, 2.6, seed + 1)
+    shade = 0.82 + 0.22 * fine + 0.18 * (broad - 0.5)
+    base = np.array((0.17, 0.30, 0.10), np.float32)[None, None, :]
+    dry = np.array((0.36, 0.34, 0.16), np.float32)[None, None, :]
+    mix = np.clip((broad - 0.62) * 2.5, 0, 1)[..., None] * 0.35
+    return (base * (1 - mix) + dry * mix) * shade[..., None]
+
+
+def paving_rgb(size=512, seed=41):
+    """Large buff sandstone flags, as on the fort's walkways."""
+    n1, n2 = _fbm(size, size, 2.2, seed), _fbm(size, size, 1.0, seed + 1)
+    shade = 1 + 0.08 * (n1 - 0.5) + 0.05 * (n2 - 0.5)
+    col = np.array((0.62, 0.47, 0.36), np.float32)[None, None, :] * shade[..., None]
+    return _joints(col, size // 4, size // 4, 1.5, (0.40, 0.30, 0.24), 0.45)
+
+
+def flag_rgb(w=768, h=512):
+    """India's national flag: saffron, white and green with the 24-spoke Ashoka Chakra."""
+    xx, yy = _grid(w, h)
+    col = np.empty((h, w, 3), np.float32)
+    col[: h // 3] = (0.91, 0.42, 0.10)
+    col[h // 3 : 2 * h // 3] = (0.97, 0.97, 0.95)
+    col[2 * h // 3 :] = (0.07, 0.40, 0.13)
+    cx, cy, r = w / 2, h / 2, h / 6 * 0.92
+    dx, dy = xx - cx, yy - cy
+    rad = np.hypot(dx, dy)
+    ang = np.arctan2(dy, dx)
+    rim = np.abs(rad - r) < r * 0.07
+    spoke = (rad < r) & (np.abs(_wrap(ang, 2 * np.pi / 24)) * rad < r * 0.035)
+    hub = rad < r * 0.16
+    navy = np.array((0.0, 0.0, 0.5), np.float32)
+    for m in (rim, spoke, hub):
+        col[m] = navy
+    return col
+
+
 def _to_image(name, arr, outdir):
     h, w = arr.shape[:2]
     alpha = arr.shape[2] == 4
@@ -222,6 +260,9 @@ TEXTURES = {
     "band": ("tex_band", "jpg", band_rgb),
     "jali": ("tex_jali", "png", jali_rgba),
     "sandstone": ("tex_red_sandstone", "jpg", sandstone_rgb),
+    "grass": ("tex_grass", "jpg", grass_rgb),
+    "paving": ("tex_paving", "jpg", paving_rgb),
+    "flag": ("tex_flag_india", "jpg", flag_rgb),
 }
 
 

@@ -61,7 +61,7 @@ export function SectionHeader({
   centered = true,
 }: SectionHeaderProps) {
   return (
-    <div className={cn("mb-14", centered && "text-center")}>
+    <div className={cn("mb-10 md:mb-12", centered && "text-center")}>
       {eyebrow && (
         <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--hv-blue)] mb-3.5">
           {eyebrow}

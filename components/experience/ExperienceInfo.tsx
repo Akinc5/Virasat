@@ -61,14 +61,25 @@ export function ExperienceInfo({ site }: ExperienceInfoProps) {
             <p className="text-xs text-[var(--hv-text-muted)] uppercase tracking-wider mb-2">
               3D Model Info
             </p>
-            {site.threeDModels.map((model) => (
-              <div key={model.id} className="text-xs text-[var(--hv-text-secondary)] space-y-1">
-                <p>Format: <span className="text-amber-400 uppercase">{model.format}</span></p>
-                {model.fileSize && (
-                  <p>Size: <span className="text-[var(--hv-text-primary)]">{(model.fileSize / 1024 / 1024).toFixed(1)} MB</span></p>
-                )}
-              </div>
-            ))}
+            <ul className="space-y-2">
+              {site.threeDModels.map((model) => (
+                <li key={model.id} className="flex items-center justify-between gap-3 text-xs text-[var(--hv-text-secondary)]">
+                  <span className="text-[var(--hv-text-primary)]">
+                    {model.label ?? (model.source === "blender" ? "Virasat model" : "3D model")}
+                  </span>
+                  <span className="shrink-0 text-amber-600 uppercase">
+                    {model.format}
+                    {model.fileSize ? ` · ${(model.fileSize / 1024 / 1024).toFixed(1)} MB` : ""}
+                  </span>
+                </li>
+              ))}
+              {site.sketchfabModelId && (
+                <li className="flex items-center justify-between gap-3 text-xs text-[var(--hv-text-secondary)]">
+                  <span className="text-[var(--hv-text-primary)]">Sketchfab</span>
+                  <span className="shrink-0 text-amber-600 uppercase">Embed</span>
+                </li>
+              )}
+            </ul>
           </div>
         </>
       )}

@@ -13,8 +13,8 @@ export default function NotFound() {
           Page Not Found
         </h1>
         <p className="text-[var(--hv-text-secondary)] text-sm leading-relaxed mb-8">
-          The heritage site or page you're looking for doesn't exist yet.
-          Perhaps it's waiting to be discovered — like so many of India's
+          The heritage site or page you&apos;re looking for doesn&apos;t exist yet.
+          Perhaps it&apos;s waiting to be discovered — like so many of India&apos;s
           hidden treasures.
         </p>
         <div className="flex gap-3 justify-center">

@@ -35,13 +35,13 @@ export function VRPlaceholder({ siteName }: VRPlaceholderProps) {
           Coming Soon
         </div>
 
-        <h3 className="font-display text-xl font-bold text-white mb-2">
+        <h3 className="font-display text-xl font-bold text-[var(--hv-text-primary)] mb-2">
           VR Tour
         </h3>
-        <p className="text-sm text-white/60 max-w-xs mx-auto leading-relaxed">
+        <p className="text-sm text-[var(--hv-text-secondary)] max-w-xs mx-auto leading-relaxed">
           Put on your VR headset and walk through{" "}
           {siteName ?? "this heritage site"} as if you were there. An
-          immersive journey through India's ancient history.
+          immersive journey through India&apos;s ancient history.
         </p>
 
         <div className="mt-6 text-xs text-teal-400/50 font-mono">

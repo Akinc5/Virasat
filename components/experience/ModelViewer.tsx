@@ -7,6 +7,9 @@
 //
 // AR: WebXR on Android Chrome, Scene Viewer as Android fallback, and
 // Quick Look on iOS (needs a .usdz alongside — pass `iosSrc`).
+//
+// Tours: pass `hotspots` (positions in the GLB's own metres) and `focus`
+// (camera target/orbit, also in model metres); both are scaled here by `scale`.
 // ============================================================
 
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +18,18 @@ import { cn } from "@/lib/utils";
 
 const MODEL_VIEWER_SRC = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
 
+export interface ViewerHotspot {
+  id: string;
+  label: string;
+  position: string; // "x y z" in model metres
+  normal: string;
+}
+
+export interface ViewerFocus {
+  target: string; // "x y z" in model metres
+  orbit: string; // "theta phi radius", radius in model metres
+}
+
 interface ModelViewerProps {
   src: string;
   title: string;
@@ -22,9 +37,46 @@ interface ModelViewerProps {
   iosSrc?: string;
   poster?: string;
   className?: string;
+  hotspots?: ViewerHotspot[];
+  activeHotspot?: string | null;
+  onHotspotClick?: (id: string) => void;
+  focus?: ViewerFocus | null;
+  // Overview camera orbit (defaults to a front three-quarter view)
+  orbit?: string;
+  // Attribution chip; pass null to hide it (e.g. when the page shows it)
+  credit?: string | null;
 }
 
-export function ModelViewer({ src, title, scale = 1, iosSrc, poster, className }: ModelViewerProps) {
+const DEFAULT_ORBIT = "-25deg 72deg 108%";
+
+/** "1m 2m 3m" × s → "0.01m 0.02m 0.03m" */
+function scaleVec(v: string, s: number) {
+  return v
+    .trim()
+    .split(/\s+/)
+    .map((p) => `${(parseFloat(p) * s).toFixed(4)}m`)
+    .join(" ");
+}
+
+function scaleOrbit(orbit: string, s: number) {
+  const [theta, phi, radius] = orbit.trim().split(/\s+/);
+  return `${theta} ${phi} ${(parseFloat(radius) * s).toFixed(4)}m`;
+}
+
+export function ModelViewer({
+  src,
+  title,
+  scale = 1,
+  iosSrc,
+  poster,
+  className,
+  hotspots = [],
+  activeHotspot = null,
+  onHotspotClick,
+  focus = null,
+  orbit = DEFAULT_ORBIT,
+  credit = "Prepared in Blender · Virasat",
+}: ModelViewerProps) {
   const viewerRef = useRef<HTMLElement | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -60,6 +112,19 @@ export function ModelViewer({ src, title, scale = 1, iosSrc, poster, className }
     };
   }, [src]);
 
+  // Fly the camera to the focused tour stop, or back to the overview.
+  useEffect(() => {
+    const el = viewerRef.current as (HTMLElement & { cameraTarget: string; cameraOrbit: string }) | null;
+    if (!el || !isLoaded) return;
+    if (focus) {
+      el.cameraTarget = scaleVec(focus.target, scale);
+      el.cameraOrbit = scaleOrbit(focus.orbit, scale);
+    } else {
+      el.cameraTarget = "auto auto auto";
+      el.cameraOrbit = orbit;
+    }
+  }, [focus, scale, isLoaded, orbit]);
+
   return (
     <div
       className={cn(
@@ -80,10 +145,11 @@ export function ModelViewer({ src, title, scale = 1, iosSrc, poster, className }
         scale={`${scale} ${scale} ${scale}`}
         camera-controls
         touch-action="pan-y"
-        auto-rotate
+        auto-rotate={focus ? undefined : true}
         auto-rotate-delay="1500"
         rotation-per-second="12deg"
-        camera-orbit="-25deg 72deg auto"
+        camera-orbit={orbit}
+        interpolation-decay="120"
         interaction-prompt="none"
         environment-image="neutral"
         exposure="1.05"
@@ -105,6 +171,23 @@ export function ModelViewer({ src, title, scale = 1, iosSrc, poster, className }
         </button>
         {/* Hide the default progress bar; we draw our own */}
         <div slot="progress-bar" />
+        {/* Tour pins, anchored to the model surface */}
+        {isLoaded &&
+          hotspots.map((h, i) => (
+            <button
+              key={h.id}
+              slot={`hotspot-${h.id}`}
+              data-position={scaleVec(h.position, scale)}
+              data-normal={h.normal}
+              data-visibility-attribute="visible"
+              onClick={() => onHotspotClick?.(h.id)}
+              className={cn("hv-hotspot", activeHotspot === h.id && "hv-hotspot--active")}
+              aria-label={`Tour stop ${i + 1}: ${h.label}`}
+            >
+              <span className="hv-hotspot__dot">{i + 1}</span>
+              <span className="hv-hotspot__label">{h.label}</span>
+            </button>
+          ))}
       </model-viewer>
 
       {/* Loading overlay */}
@@ -139,15 +222,21 @@ export function ModelViewer({ src, title, scale = 1, iosSrc, poster, className }
         </button>
       </div>
 
-      {/* Hint for desktop visitors, where AR is unavailable */}
-      {isLoaded && !canAR && (
-        <div className="absolute bottom-4 right-4 glass-card px-3 py-1.5 rounded-lg z-20">
-          <span className="text-xs text-[var(--hv-text-muted)]">Open on a phone to view in AR</span>
-        </div>
-      )}
-
-      <div className="absolute bottom-4 left-4 glass-card px-3 py-1.5 rounded-lg z-20">
-        <span className="text-xs text-[var(--hv-text-muted)]">Procedural model · Virasat</span>
+      {/* Bottom chips share one row so they can never overlap each other */}
+      <div className="absolute bottom-4 inset-x-4 flex items-end justify-between gap-3 z-20 pointer-events-none">
+        {credit ? (
+          <div className="glass-card px-3 py-1.5 rounded-lg min-w-0 max-w-[55%]">
+            <span className="block text-xs text-[var(--hv-text-muted)] truncate">{credit}</span>
+          </div>
+        ) : (
+          <span />
+        )}
+        {/* Hint for desktop visitors, where AR is unavailable */}
+        {isLoaded && !canAR && (
+          <div className="glass-card px-3 py-1.5 rounded-lg shrink-0">
+            <span className="text-xs text-[var(--hv-text-muted)]">Open on a phone to view in AR</span>
+          </div>
+        )}
       </div>
     </div>
   );

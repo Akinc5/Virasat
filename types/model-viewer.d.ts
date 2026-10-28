@@ -18,7 +18,7 @@ declare global {
         "interpolation-decay"?: string;
         poster?: string;
         style?: React.CSSProperties;
-        [key: string]: any;
+        [key: string]: unknown;
       };
     }
   }
@@ -40,7 +40,7 @@ declare global {
         "interpolation-decay"?: string;
         poster?: string;
         style?: React.CSSProperties;
-        [key: string]: any;
+        [key: string]: unknown;
       };
     }
   }
