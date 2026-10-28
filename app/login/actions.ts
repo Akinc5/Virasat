@@ -1,0 +1,58 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { AuthError } from "next-auth";
+import { signIn } from "@/auth";
+import { createUser } from "@/lib/auth/users";
+import { safeCallbackUrl } from "@/lib/auth/callback";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function field(form: FormData, name: string) {
+  const v = form.get(name);
+  return typeof v === "string" ? v.trim() : "";
+}
+
+function back(mode: "signin" | "signup", error: string, callbackUrl: string): never {
+  const q = new URLSearchParams({ mode, error, callbackUrl });
+  redirect(`/login?${q.toString()}`);
+}
+
+async function signInOrBack(email: string, password: string, mode: "signin" | "signup", callbackUrl: string) {
+  try {
+    // On success this throws Next's redirect, which must propagate
+    await signIn("credentials", { email, password, redirectTo: callbackUrl });
+  } catch (err) {
+    if (err instanceof AuthError) back(mode, "invalid", callbackUrl);
+    throw err;
+  }
+}
+
+export async function signInWithPassword(form: FormData) {
+  const callbackUrl = safeCallbackUrl(field(form, "callbackUrl"));
+  const email = field(form, "email");
+  const password = form.get("password");
+  if (!EMAIL_RE.test(email) || typeof password !== "string" || !password) back("signin", "invalid", callbackUrl);
+  await signInOrBack(email, password as string, "signin", callbackUrl);
+}
+
+export async function signUpWithPassword(form: FormData) {
+  const callbackUrl = safeCallbackUrl(field(form, "callbackUrl"));
+  const name = field(form, "name");
+  const email = field(form, "email");
+  const password = form.get("password");
+  if (!name) back("signup", "name", callbackUrl);
+  if (!EMAIL_RE.test(email)) back("signup", "email", callbackUrl);
+  if (typeof password !== "string" || password.length < 8) back("signup", "password", callbackUrl);
+  try {
+    await createUser(name, email, password as string);
+  } catch (err) {
+    if (err instanceof Error && err.message === "EMAIL_TAKEN") back("signup", "taken", callbackUrl);
+    throw err;
+  }
+  await signInOrBack(email, password as string, "signup", callbackUrl);
+}
+
+export async function signInWithGoogle(form: FormData) {
+  await signIn("google", { redirectTo: safeCallbackUrl(field(form, "callbackUrl")) });
+}

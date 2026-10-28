@@ -80,6 +80,16 @@ export interface ThreeDModel {
   id: string;
   heritageSiteId: string;
   modelUrl: string;
+  // "blender" = built by blender/monuments/*.py (supports guided tours)
+  // "scan"    = third-party model / photogrammetry processed by blender/scans/
+  source?: "blender" | "scan" | "placeholder";
+  // Short name shown on the viewer's model switcher, e.g. "Virasat model"
+  label?: string;
+  // Default camera orbit, for models whose best view isn't the front
+  cameraOrbit?: string;
+  // Uniform scale applied in the viewer and AR (Blender models are 1 unit = 1 m,
+  // so e.g. 0.01 turns the 96 m Taj Mahal plinth into a ~1 m tabletop model)
+  displayScale?: number;
   thumbnailUrl?: string;
   format: ModelFormat;
   fileSize?: number;

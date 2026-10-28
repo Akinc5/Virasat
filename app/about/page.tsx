@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Section, SectionHeader } from "@/components/layout/PageWrapper";
-import { Shield, Globe, Eye, Layers, Code, Users } from "lucide-react";
+import { Shield, Globe, Code, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About — HeritageVerse",
+  title: "About — Virasat",
   description:
-    "Learn about HeritageVerse's mission to digitally preserve India's cultural heritage through modern web, AR, and VR technology.",
+    "Learn about Virasat's mission to digitally preserve India's cultural heritage through modern web, AR, and VR technology.",
 };
 
 const roadmapItems = [
@@ -86,12 +86,12 @@ export default function AboutPage() {
             Our Mission
           </p>
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-[var(--hv-text-primary)] leading-tight mb-6">
-            Preserving India's Past{" "}
+            Preserving India&apos;s Past{" "}
             <span className="text-gold-gradient">for Tomorrow</span>
           </h1>
           <p className="text-[var(--hv-text-secondary)] text-lg leading-relaxed max-w-3xl mx-auto font-serif">
-            HeritageVerse is a digital platform dedicated to documenting,
-            preserving, and making accessible India's extraordinary cultural
+            Virasat is a digital platform dedicated to documenting,
+            preserving, and making accessible India&apos;s extraordinary cultural
             heritage through modern web technology, augmented reality, and
             virtual reality.
           </p>
@@ -151,7 +151,7 @@ export default function AboutPage() {
         <SectionHeader
           eyebrow="Our Values"
           title="How We Work"
-          subtitle="HeritageVerse is built on four core principles that guide every product decision."
+          subtitle="Virasat is built on four core principles that guide every product decision."
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {teamValues.map(({ icon: Icon, title, description }) => (
@@ -245,8 +245,8 @@ export default function AboutPage() {
             Join the Preservation Mission
           </h2>
           <p className="text-[var(--hv-text-secondary)] mb-7 leading-relaxed">
-            Whether you're a developer, historian, photographer, or simply someone who loves India's culture —
-            there's a place for you in the HeritageVerse community.
+            Whether you&apos;re a developer, historian, photographer, or simply someone who loves India&apos;s culture —
+            there&apos;s a place for you in the Virasat community.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/explore">

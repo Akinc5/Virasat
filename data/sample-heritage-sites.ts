@@ -8,6 +8,7 @@
 // ============================================================
 
 import type { HeritageSite } from "@/types";
+import { HERITAGE_GALLERY } from "@/data/heritage-gallery";
 
 export const sampleHeritageSites: HeritageSite[] = [
   {
@@ -38,24 +39,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     sketchfabModelId: "33149233cefd492b9abdd50fe5a8c921",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
-    media: [
-      {
-        id: "media_01",
-        heritageSiteId: "site_01",
-        type: "image",
-        url: "/images/heritage/taj-mahal-1.jpg",
-        title: "Taj Mahal at Dawn",
-        createdAt: new Date("2024-01-01"),
-      },
-      {
-        id: "media_02",
-        heritageSiteId: "site_01",
-        type: "image",
-        url: "/images/heritage/taj-mahal-2.jpg",
-        title: "The Great Gate (Darwaza-i-Rauza)",
-        createdAt: new Date("2024-01-01"),
-      },
-    ],
+    media: [],
     timelineEvents: [
       {
         id: "te_01",
@@ -95,6 +79,9 @@ export const sampleHeritageSites: HeritageSite[] = [
         id: "model_01",
         heritageSiteId: "site_01",
         modelUrl: "/models/taj-mahal.glb",
+        source: "blender",
+        label: "Virasat model",
+        displayScale: 0.01,
         format: "glb",
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-01"),
@@ -105,6 +92,17 @@ export const sampleHeritageSites: HeritageSite[] = [
           ta: `இந்தியாவின் மிகவும் புகழ்பெற்ற நினைவுச்சின்னங்களில் ஒன்றான தாஜ்மஹால் உங்களை வரவேற்கிறது. ஆக்ராவில் யமுனை நதிக்கரையில் அமைந்துள்ள தாஜ்மஹால், முகலாய பேரரசர் ஷாஜஹானால் அவரது மனைவி மும்தாஜ் மஹாலின் நினைவாக கட்டப்பட்டது. பிரதான கல்லறையின் கட்டுமானம் 1632 இல் தொடங்கி 1648 இல் நிறைவடைந்தது. உங்களுக்கு முன்னால் ஒரு பிரம்மாண்டமான மேடையில் எழுப்பப்பட்ட ஒரு பரந்த வெள்ளை பளிங்கு கல்லறை நிற்கிறது. பிரதான அறைக்கு மேலே ஒரு பெரிய மைய குவிமாடம் உயர்ந்துள்ளது, அதன் மூலைகளில் நான்கு மெல்லிய மினாராக்கள் உள்ளன. கட்டிடத்தின் குறிப்பிடத்தக்க சமச்சீர்நிலை அதன் வடிவமைப்பின் முக்கிய பண்புகளில் ஒன்றாகும். பளிங்கு மேற்பரப்புகளை உற்று நோக்கினால், நுட்பமான மலர் வேலைப்பாடுகள், சிக்கலான கல் பதிப்பு வேலைகள் மற்றும் அரபு கையெழுத்துக்கலைகளை நீங்கள் காணலாம். உள்ளே, ஒரு நேர்த்தியாக செதுக்கப்பட்ட பளிங்கு திரை மும்தாஜ் மஹால் மற்றும் ஷாஜஹானின் கல்லறைகளை சூழ்ந்துள்ளது. கல்லறைக்கு முன்னால் ஒரு முறையான முகலாய தோட்டம் நீண்டுள்ளது, இது பாதைகள் மற்றும் நீர் வழிகளால் பிரிக்கப்பட்டுள்ளது. பக்கவாட்டில் மாறுபட்ட சிவப்பு மணற்கல்லால் கட்டப்பட்ட ஒரு மசூதியும் விருந்தினர் மாளிகையும் உள்ளன. தாஜ்மஹால் வெறும் ஒரு நினைவுச்சின்னம் மட்டுமல்ல. இது கட்டிடக்கலை, தோட்ட வடிவமைப்பு, கைவினைத்திறன் மற்றும் கலாச்சார வரலாறு ஆகியவற்றின் குறிப்பிடத்தக்க கலவையாகும் - இது இன்று உலக பாரம்பரியத்தின் தலைசிறந்த படைப்பாக பாதுகாக்கப்படுகிறது.`,
           ml: `ഇന്ത്യയിലെ ഏറ്റവും പ്രശസ്തമായ സ്മാരകങ്ങളിലൊന്നായ താജ്മഹലിലേക്ക് സ്വാഗതം. ആഗ്രയിലെ യമുനാ നദിയുടെ തീരത്ത് സ്ഥിതി ചെയ്യുന്ന താജ്മഹൽ, മുഗൾ ചക്രവർത്തിയായ ഷാജഹാൻ തന്റെ ഭാര്യ മുംതാസ് മഹലിന്റെ സ്മരണയ്ക്കായി നിർമ്മിച്ചതാണ്. പ്രധാന ശവകുടീരത്തിന്റെ നിർമ്മാണം 1632-ൽ ആരംഭിച്ച് 1648-ൽ പൂർത്തിയായി. നിങ്ങളുടെ മുന്നിൽ വലിയൊരു തറയിൽ നിർമ്മിച്ചിരിക്കുന്ന വിശാലമായ വെളുത്ത മാർബിൾ ശവകുടീരമുണ്ട്. പ്രധാന അറയ്ക്ക് മുകളിലായി ഒരു വലിയ മധ്യ താഴികക്കുടം ഉയർന്നുനിൽക്കുന്നു, നാല് കോണുകളിലായി നാല് നേർത്ത മിനാരങ്ങൾ ഇതിന് ചുറ്റുമുണ്ട്. കെട്ടിടത്തിന്റെ അതിശയകരമായ സമമിതി അതിൻ്റെ രൂപകൽപ്പനയുടെ പ്രധാന സവിശേഷതകളിലൊന്നാണ്. മാർബിൾ പ്രതലങ്ങൾ സൂക്ഷ്മമായി നിരീക്ഷിച്ചാൽ, സൂക്ഷ്മമായ പുഷ്പ കൊത്തുപണികളും സങ്കീർണ്ണമായ കല്ല് പതിക്കൽ ജോലികളും അറബിക് കാലിഗ്രാഫിയും നിങ്ങൾക്ക് കാണാം. ഉള്ളിൽ, മനോഹരമായി കൊത്തിയെടുത്ത മാർബിൾ സ്ക്രീൻ മുംതാസ് മഹലിന്റെയും ഷാജഹാന്റെയും ശവകുടീരങ്ങളെ ചുറ്റിപ്പറ്റി നിൽക്കുന്നു. ശവകുടീരത്തിന് മുൻപിലായി പാതകളാലും ജലപാതകളാലും വിഭജിക്കപ്പെട്ട ഒരു മുഗൾ ഉദ്യാനമുണ്ട്. വശങ്ങളിലായി ചുവന്ന മണൽക്കല്ലിൽ നിർമ്മിച്ച ഒരു പള്ളിയും അതിഥി മന്ദിരവും ഉണ്ട്. താജ്മഹൽ കേവലമൊരു സ്മാരകമല്ല. വാസ്തുവിദ്യ, പൂന്തോട്ട രൂപകൽപ്പന, കരകൗശലവിദ്യ, സാംസ്കാരിക ചരിത്രം എന്നിവയുടെ ശ്രദ്ധേയമായ ഒരു സംയോജനമാണിത് - ലോക പൈതൃകത്തിന്റെ ഒരു മാസ്റ്റർപീസായി ഇന്ന് സംരക്ഷിക്കപ്പെട്ടിരിക്കുന്നു.`,
         },
+      },
+      {
+        id: "model_01_scan",
+        heritageSiteId: "site_01",
+        modelUrl: "/models/taj-mahal-scan.glb",
+        source: "scan",
+        label: "Detailed model",
+        displayScale: 0.01,
+        format: "glb",
+        createdAt: new Date("2026-10-28"),
+        updatedAt: new Date("2026-10-28"),
       },
     ],
   },
@@ -136,16 +134,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     sketchfabModelId: "dfaf413f0ce845a3b798b0bb4079962a",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
-    media: [
-      {
-        id: "media_03",
-        heritageSiteId: "site_02",
-        type: "image",
-        url: "/images/heritage/hampi-1.jpg",
-        title: "Vittala Temple Stone Chariot",
-        createdAt: new Date("2024-01-01"),
-      },
-    ],
+    media: [],
     timelineEvents: [
       {
         id: "te_05",
@@ -174,7 +163,11 @@ export const sampleHeritageSites: HeritageSite[] = [
       {
         id: "model_02",
         heritageSiteId: "site_02",
-        modelUrl: "/models/hampi.glb",
+        modelUrl: "/models/hampi-scan.glb",
+        source: "scan",
+        label: "3D scan",
+        displayScale: 0.1,
+        cameraOrbit: "-35deg 75deg auto",
         format: "glb",
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-01"),
@@ -216,16 +209,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     sketchfabModelId: "6cc905be2ae34e8091eb1eaa84a17738",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
-    media: [
-      {
-        id: "media_04",
-        heritageSiteId: "site_03",
-        type: "image",
-        url: "/images/heritage/konark-1.jpg",
-        title: "The Stone Chariot Wheels",
-        createdAt: new Date("2024-01-01"),
-      },
-    ],
+    media: [],
     timelineEvents: [
       {
         id: "te_08",
@@ -248,6 +232,9 @@ export const sampleHeritageSites: HeritageSite[] = [
         id: "model_03",
         heritageSiteId: "site_03",
         modelUrl: "/models/konark.glb",
+        source: "blender",
+        label: "Virasat model",
+        displayScale: 0.009,
         format: "glb",
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-01"),
@@ -289,16 +276,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     sketchfabModelId: "d916f1bc949c4284ab3fe56ddbfe660d",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
-    media: [
-      {
-        id: "media_05",
-        heritageSiteId: "site_04",
-        type: "image",
-        url: "/images/heritage/ajanta-1.jpg",
-        title: "Cave 1 Murals",
-        createdAt: new Date("2024-01-01"),
-      },
-    ],
+    media: [],
     timelineEvents: [
       {
         id: "te_10",
@@ -335,7 +313,11 @@ export const sampleHeritageSites: HeritageSite[] = [
       {
         id: "model_04",
         heritageSiteId: "site_04",
-        modelUrl: "/models/ajanta.glb",
+        modelUrl: "/models/ajanta-scan.glb",
+        source: "scan",
+        label: "3D scan",
+        displayScale: 0.03,
+        cameraOrbit: "45deg 76deg 80%",
         format: "glb",
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-01"),
@@ -377,16 +359,7 @@ export const sampleHeritageSites: HeritageSite[] = [
     sketchfabModelId: "1a5ec1e212f9451e80dc051e97164d17",
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-01"),
-    media: [
-      {
-        id: "media_06",
-        heritageSiteId: "site_05",
-        type: "image",
-        url: "/images/heritage/ellora-1.jpg",
-        title: "Kailasa Temple Aerial View",
-        createdAt: new Date("2024-01-01"),
-      },
-    ],
+    media: [],
     timelineEvents: [
       {
         id: "te_14",
@@ -422,7 +395,11 @@ export const sampleHeritageSites: HeritageSite[] = [
       {
         id: "model_05",
         heritageSiteId: "site_05",
-        modelUrl: "/models/ellora.glb",
+        modelUrl: "/models/ellora-scan.glb",
+        source: "scan",
+        label: "Site scan",
+        displayScale: 0.0025,
+        cameraOrbit: "-20deg 55deg auto",
         format: "glb",
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-01"),
@@ -436,7 +413,108 @@ export const sampleHeritageSites: HeritageSite[] = [
       }
     ],
   },
+  {
+    id: "site_06",
+    name: "Red Fort",
+    slug: "red-fort",
+    shortDescription:
+      "Shah Jahan's red sandstone palace-fortress in Delhi, where India's Prime Minister raises the flag every Independence Day.",
+    description:
+      "The Red Fort (Lal Qila) was the main residence of the Mughal emperors for nearly two centuries. Built by Shah Jahan as the palace of his new capital, Shahjahanabad, its massive red sandstone walls enclose marble pavilions, gardens and halls of audience. Since 1947 it has been the stage for India's Independence Day address.",
+    state: "Delhi",
+    city: "New Delhi",
+    region: "North India",
+    latitude: 28.6562,
+    longitude: 77.241,
+    historicalPeriod: "Mughal Era (1526–1857 CE)",
+    architecturalStyle: "Mughal",
+    category: "Fort",
+    unescoStatus: "World Heritage Site",
+    yearBuilt: 1639,
+    history:
+      "Shah Jahan began the fort in 1639 when he moved the Mughal capital from Agra to Delhi, and it was completed in 1648. The Persian ruler Nadir Shah looted it in 1739 and carried away the Peacock Throne. After the Revolt of 1857 the British exiled the last Mughal emperor, Bahadur Shah Zafar, and turned much of the fort into a garrison. On 15 August 1947 independent India's flag was raised here, a tradition that continues every year.",
+    architecture:
+      "Designed by Ustad Ahmad Lahori, who is also linked to the Taj Mahal, the fort is an irregular octagon enclosed by walls about 2.5 km long, rising to around 33 m on the city side. Inside, Persian, Timurid and Indian ideas meet: the Diwan-i-Am for public audiences, the marble Diwan-i-Khas that once held the Peacock Throne, and the Rang Mahal, all linked by the Nahr-i-Bihisht, a 'stream of paradise' that flowed through the palace.",
+    culturalSignificance:
+      "The Red Fort marks the high point of Mughal palace architecture and, after 1947, became a symbol of Indian independence. Each year on Independence Day the Prime Minister hoists the national flag at the Lahori Gate and addresses the nation from its ramparts. It was inscribed as the Red Fort Complex on the UNESCO World Heritage List in 2007.",
+    heroImage: "/images/heritage/red-fort-hero.jpg",
+    sketchfabModelId: "2ad9ae0a1b524a37a2c3ab245b0e5423",
+    createdAt: new Date("2026-10-28"),
+    updatedAt: new Date("2026-10-28"),
+    media: [],
+    timelineEvents: [
+      {
+        id: "te_18",
+        heritageSiteId: "site_06",
+        year: 1639,
+        title: "Construction Begins",
+        description: "Shah Jahan lays the foundation of the fort for his new capital, Shahjahanabad.",
+      },
+      {
+        id: "te_19",
+        heritageSiteId: "site_06",
+        year: 1648,
+        title: "Fort Completed",
+        description: "The palace is finished and the imperial court moves from Agra to Delhi.",
+      },
+      {
+        id: "te_20",
+        heritageSiteId: "site_06",
+        year: 1739,
+        title: "Sack by Nadir Shah",
+        description: "The Persian ruler Nadir Shah plunders Delhi and takes the Peacock Throne.",
+      },
+      {
+        id: "te_21",
+        heritageSiteId: "site_06",
+        year: 1857,
+        title: "Revolt and British Control",
+        description: "After the Revolt of 1857 the British depose Bahadur Shah Zafar and garrison the fort.",
+      },
+      {
+        id: "te_22",
+        heritageSiteId: "site_06",
+        year: 1947,
+        title: "Independence",
+        description: "Independent India's flag is raised at the Red Fort, beginning the Independence Day tradition.",
+      },
+      {
+        id: "te_23",
+        heritageSiteId: "site_06",
+        year: 2007,
+        title: "UNESCO World Heritage Site",
+        description: "The Red Fort Complex is inscribed on the UNESCO World Heritage List.",
+      },
+    ],
+    threeDModels: [
+      {
+        id: "model_06",
+        heritageSiteId: "site_06",
+        modelUrl: "/models/red-fort-scan.glb",
+        source: "scan",
+        label: "3D model",
+        displayScale: 0.006,
+        cameraOrbit: "-70deg 70deg 60%",
+        format: "glb",
+        createdAt: new Date("2026-10-28"),
+        updatedAt: new Date("2026-10-28"),
+        audioDescriptionText: `Welcome to the Red Fort in Delhi. The Mughal emperor Shah Jahan began building this palace-fortress in 1639, when he moved his capital from Agra to Delhi, and it was completed in 1648. Its name comes from the red sandstone of its walls, which stretch for about two and a half kilometres. In front of you is the Lahori Gate, the main entrance, crowned by small domed pavilions called chhatris. Inside the walls the emperors held court in the Hall of Public Audience, the Diwan-i-Am, and received nobles in the white marble Hall of Private Audience, the Diwan-i-Khas, which once held the famous Peacock Throne. A water channel called the Stream of Paradise once flowed through the palace to cool its rooms. After the Revolt of 1857 the British took control of the fort. On the fifteenth of August 1947 the flag of independent India was raised here, and every Independence Day the Prime Minister hoists the national flag at the Lahori Gate and speaks to the nation. In 2007 the Red Fort Complex was declared a UNESCO World Heritage Site.`,
+      },
+    ],
+  },
 ];
+
+// Photo galleries live in data/heritage-gallery.ts with their licences
+for (const site of sampleHeritageSites) {
+  site.media = (HERITAGE_GALLERY[site.slug] ?? []).map((img, i) => ({
+    id: `${site.id}_img_${i + 1}`,
+    heritageSiteId: site.id,
+    type: "image" as const,
+    url: img.url,
+    title: img.title,
+    createdAt: site.createdAt,
+  }));
+}
 
 // Utility: get a site by slug from sample data
 export function getSampleSiteBySlug(slug: string): HeritageSite | undefined {

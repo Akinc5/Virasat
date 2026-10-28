@@ -7,7 +7,12 @@
 // ============================================================
 
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/auth.config";
+
+// Edge-safe config only: the full auth.ts pulls in the filesystem-backed
+// account store, which must not be bundled into the proxy.
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");

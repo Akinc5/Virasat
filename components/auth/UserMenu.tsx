@@ -43,7 +43,7 @@ export function UserMenu({ className, variant = "dropdown" }: UserMenuProps) {
   if (!session?.user) {
     return (
       <Link href="/login" className={className}>
-        <Button variant="outline" size="sm" className="text-xs tracking-widest uppercase">
+        <Button variant="outline" size="sm" className="text-xs tracking-widest uppercase whitespace-nowrap">
           Sign In
         </Button>
       </Link>

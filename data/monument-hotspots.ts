@@ -3,10 +3,13 @@ export interface MonumentHotspot {
   siteSlug: string;
   title: string;
   category: "Architecture" | "Engineering" | "Sacred Art" | "History" | "Landscape";
-  position: string; // "x y z" coordinates on 3D surface
-  normal: string;   // surface normal for rotation
-  cameraOrbit: string; // "theta phi radius"
+  // Coordinates are in the GLB's own space (metres, Y up, +Z = front),
+  // i.e. before the viewer's displayScale is applied.
+  position: string; // "x y z" point on the model surface
+  normal: string;   // surface normal, orients the pin
+  cameraOrbit: string; // "theta phi radius" when this stop is focused
   cameraTarget: string; // "x y z" focus target
+  onModel?: boolean; // false = the feature isn't part of the 3D model (story only)
   shortDescription: string;
   explanation: string;
   trivia: string;
@@ -20,10 +23,10 @@ export const MONUMENT_HOTSPOTS: Record<string, MonumentHotspot[]> = {
       siteSlug: "taj-mahal",
       title: "The Main Marble Dome (Amrud)",
       category: "Architecture",
-      position: "0m 1.25m 0m",
-      normal: "0m 1m 0m",
-      cameraOrbit: "0deg 65deg 2.4m",
-      cameraTarget: "0m 1.15m 0m",
+      position: "0m 44.8m 13.95m",
+      normal: "0m 0.25m 1m",
+      cameraOrbit: "0deg 72deg 62m",
+      cameraTarget: "0m 46m 0m",
       badgeText: "73m Elevation",
       shortDescription: "The monumental 73-meter bulbous dome of pure Makrana marble.",
       explanation:
@@ -36,10 +39,10 @@ export const MONUMENT_HOTSPOTS: Record<string, MonumentHotspot[]> = {
       siteSlug: "taj-mahal",
       title: "The Earthquake-Safe Minarets",
       category: "Engineering",
-      position: "1.15m 0.65m 1.15m",
-      normal: "1m 0m 1m",
-      cameraOrbit: "45deg 70deg 3.6m",
-      cameraTarget: "1m 0.6m 1m",
+      position: "43.2m 28.4m 45.6m",
+      normal: "0m 0m 1m",
+      cameraOrbit: "25deg 78deg 48m",
+      cameraTarget: "43.2m 30m 43.2m",
       badgeText: "Seismic Defense",
       shortDescription: "Four 40-meter towers intentionally tilted outward.",
       explanation:
@@ -56,6 +59,7 @@ export const MONUMENT_HOTSPOTS: Record<string, MonumentHotspot[]> = {
       normal: "0m 0m 1m",
       cameraOrbit: "180deg 75deg 4.2m",
       cameraTarget: "0m 0.35m 1.5m",
+      onModel: false,
       badgeText: "Optical Artistry",
       shortDescription: "Monumental red sandstone entryway framing the tomb.",
       explanation:
@@ -72,6 +76,7 @@ export const MONUMENT_HOTSPOTS: Record<string, MonumentHotspot[]> = {
       normal: "0m 1m 0m",
       cameraOrbit: "110deg 50deg 4.4m",
       cameraTarget: "0m -0.05m 0.7m",
+      onModel: false,
       badgeText: "Sacred Geometry",
       shortDescription: "Persian 4-quadrant layout symbolizing the Rivers of Paradise.",
       explanation:
@@ -84,16 +89,32 @@ export const MONUMENT_HOTSPOTS: Record<string, MonumentHotspot[]> = {
       siteSlug: "taj-mahal",
       title: "Pietra Dura (Parchin Kari) Inlay",
       category: "Sacred Art",
-      position: "0m 0.45m 0.35m",
+      position: "5.2m 25.4m 29.2m",
       normal: "0m 0m 1m",
-      cameraOrbit: "15deg 80deg 1.7m",
-      cameraTarget: "0m 0.45m 0.25m",
+      cameraOrbit: "8deg 84deg 26m",
+      cameraTarget: "3m 22m 29m",
       badgeText: "28 Gemstones",
       shortDescription: "Intricate floral arabesques cut into translucent Makrana marble.",
       explanation:
         "The delicate flowers adorning the marble walls and the octagonal cenotaph screen are examples of Parchin Kari inlay. Artisans shaped lapis lazuli from Afghanistan, carnelian from Arabia, jade from China, and turquoise from Tibet into micro-precise petals fitted without grout.",
       trivia:
         "A single 6-inch flower motif on the central cenotaph contains up to 60 individually cut and polished gemstone segments, so seamlessly fitted that joints cannot be felt with a fingernail.",
+    },
+    {
+      id: "taj-iwan",
+      siteSlug: "taj-mahal",
+      title: "The Great Iwan & Calligraphy Frame",
+      category: "Sacred Art",
+      position: "0m 15m 29.2m",
+      normal: "0m 0m 1m",
+      cameraOrbit: "0deg 82deg 55m",
+      cameraTarget: "0m 18m 28m",
+      badgeText: "Optical Illusion",
+      shortDescription: "A vaulted portal framed by Qur'anic calligraphy in black marble.",
+      explanation:
+        "Each face of the mausoleum is dominated by an iwan: a tall vaulted recess set inside a rectangular frame (pishtaq). Around it runs a band of Qur'anic verses inlaid in black marble, designed by the calligrapher Amanat Khan, whose name appears on the monument.",
+      trivia:
+        "The letters grow taller the higher they are on the frame, so from the ground the whole inscription appears to be one uniform size.",
     },
   ],
 
@@ -103,10 +124,10 @@ export const MONUMENT_HOTSPOTS: Record<string, MonumentHotspot[]> = {
       siteSlug: "konark-sun-temple",
       title: "The 24 Astronomical Chariot Wheels",
       category: "Engineering",
-      position: "0.8m 0.2m 0.3m",
-      normal: "1m 0m 0m",
-      cameraOrbit: "45deg 75deg 2.2m",
-      cameraTarget: "0.5m 0.2m 0.2m",
+      position: "11.5m 2.05m 21.85m",
+      normal: "0m 0m 1m",
+      cameraOrbit: "12deg 82deg 16m",
+      cameraTarget: "11.5m 2.2m 21m",
       badgeText: "Functional Sundials",
       shortDescription: "Astronomical wheels that tell exact time down to minutes.",
       explanation:
@@ -119,16 +140,48 @@ export const MONUMENT_HOTSPOTS: Record<string, MonumentHotspot[]> = {
       siteSlug: "konark-sun-temple",
       title: "The Jagamohana (Assembly Hall)",
       category: "Architecture",
-      position: "0m 0.8m 0m",
-      normal: "0m 1m 0m",
-      cameraOrbit: "0deg 60deg 3.0m",
-      cameraTarget: "0m 0.6m 0m",
+      position: "0m 24m 10.4m",
+      normal: "0m 0.5m 1m",
+      cameraOrbit: "20deg 70deg 75m",
+      cameraTarget: "0m 22m 0m",
       badgeText: "Kalinga Spire",
-      shortDescription: "The surviving 38-meter pyramidal assembly hall.",
+      shortDescription: "The surviving pyramidal assembly hall, about 39 metres high.",
       explanation:
         "Rising with stepped horizontal tiers decorated with female musicians and mythical beasts, the Jagamohana is the largest surviving structure of the Konark complex.",
       trivia:
         "In 1903, British colonial engineers filled the interior of the Jagamohana with sand and sealed the doors to prevent the immense stone ceiling from collapsing.",
+    },
+    {
+      id: "konark-horses",
+      siteSlug: "konark-sun-temple",
+      title: "The Seven Horses of Surya",
+      category: "Sacred Art",
+      position: "27.6m 2.7m 9.6m",
+      normal: "0.3m 0m 1m",
+      cameraOrbit: "40deg 78deg 22m",
+      cameraTarget: "27.6m 2m 9m",
+      badgeText: "Days of the Week",
+      shortDescription: "Stone horses straining to pull the Sun God's chariot.",
+      explanation:
+        "Seven horses draw Surya's chariot, traditionally read as the seven days of the week, just as the 24 wheels are read as the hours of the day or the fortnights of the year. Only a few of the original horses survive near the eastern stairs.",
+      trivia:
+        "The temple faces east, so the first rays of the rising sun once fell through the main entrance onto the image of Surya in the sanctum.",
+    },
+    {
+      id: "konark-mandapa",
+      siteSlug: "konark-sun-temple",
+      title: "The Natya Mandapa (Dance Hall)",
+      category: "History",
+      position: "46m 9.7m 7.5m",
+      normal: "0m 0.4m 1m",
+      cameraOrbit: "25deg 70deg 40m",
+      cameraTarget: "46m 5m 0m",
+      badgeText: "Roofless Today",
+      shortDescription: "A free-standing hall where dance was offered to the Sun God.",
+      explanation:
+        "In front of the temple stands the natya mandapa, a raised hall whose walls and pillars are covered with carved dancers and musicians. Its roof has long since fallen, leaving a forest of pillars on a richly sculpted platform.",
+      trivia:
+        "The carved dance poses at Konark are so precise that they have been used as a visual reference for Odissi, the classical dance of Odisha.",
     },
   ],
 

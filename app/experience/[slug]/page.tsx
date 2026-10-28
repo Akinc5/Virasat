@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ExperienceViewer } from "@/components/experience/ExperienceViewer";
-import { ViewerControls } from "@/components/experience/ViewerControls";
 import { ExperienceInfo } from "@/components/experience/ExperienceInfo";
 import { ARPlaceholder } from "@/components/experience/ARPlaceholder";
 import { VRPlaceholder } from "@/components/experience/VRPlaceholder";
 import { getHeritageSiteBySlug } from "@/lib/services/heritage.service";
 import { sampleHeritageSites } from "@/data/sample-heritage-sites";
-import { PageWrapper, Section } from "@/components/layout/PageWrapper";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import Link from "next/link";
+import { realModels } from "@/lib/models";
 import { ArrowLeft } from "lucide-react";
 
 interface PageProps {
@@ -34,32 +34,42 @@ export default async function ExperiencePage({ params }: PageProps) {
   const site = await getHeritageSiteBySlug(slug);
 
   if (!site) notFound();
+  const arReady = realModels(site).length > 0;
 
   return (
     <div className="min-h-screen pt-16 bg-[var(--hv-bg-primary)]">
       {/* Top Bar */}
       <div className="border-b border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]">
         <PageWrapper noTopPadding className="py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+            <div className="flex items-center gap-4 min-w-0">
               <Link
                 href={`/heritage/${site.slug}`}
-                className="flex items-center gap-2 text-sm text-[var(--hv-text-muted)] hover:text-amber-400 transition-colors"
+                className="flex items-center gap-2 text-sm text-[var(--hv-text-muted)] hover:text-amber-600 transition-colors whitespace-nowrap"
               >
                 <ArrowLeft size={16} />
-                Back to {site.name}
+                <span className="sm:hidden">Back</span>
+                <span className="hidden sm:inline">Back to {site.name}</span>
               </Link>
               <div className="w-px h-4 bg-[var(--hv-bg-border)]" />
-              <p className="font-display text-sm font-semibold text-[var(--hv-text-primary)]">
-                3D Experience — {site.name}
+              <p className="font-display text-sm font-semibold text-[var(--hv-text-primary)] truncate">
+                <span className="hidden sm:inline">3D Experience — </span>
+                {site.name}
               </p>
             </div>
-            <div className="flex gap-2 text-xs">
+            <div className="flex gap-2 text-xs whitespace-nowrap">
               <span className="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium">
                 3D Active
               </span>
-              <span className="px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 font-medium">
-                AR Soon
+              <span
+                className={`px-2.5 py-1 rounded-full border font-medium ${
+                  arReady
+                    ? "bg-purple-500/15 border-purple-500/30 text-purple-600"
+                    : "bg-purple-500/10 border-purple-500/20 text-purple-400"
+                }`}
+                title={arReady ? "Open this page on a phone and tap “View in your space”" : undefined}
+              >
+                {arReady ? "AR Ready" : "AR Soon"}
               </span>
               <span className="px-2.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 font-medium">
                 VR Soon
@@ -75,7 +85,6 @@ export default async function ExperiencePage({ params }: PageProps) {
           {/* Viewer — takes 2/3 width on large screens */}
           <div className="lg:col-span-2 space-y-4">
             <ExperienceViewer site={site} />
-            <ViewerControls />
           </div>
 
           {/* Info Panel */}
@@ -86,7 +95,7 @@ export default async function ExperiencePage({ params }: PageProps) {
 
         {/* AR + VR Placeholders */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <ARPlaceholder siteName={site.name} />
+          <ARPlaceholder siteName={site.name} arReady={arReady} />
           <VRPlaceholder siteName={site.name} />
         </div>
       </PageWrapper>

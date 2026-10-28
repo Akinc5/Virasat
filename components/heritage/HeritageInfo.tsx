@@ -1,5 +1,4 @@
 import { MapPin, Calendar, Landmark, Award, Globe } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { formatYear } from "@/lib/utils";
 import type { HeritageSite } from "@/types";
 

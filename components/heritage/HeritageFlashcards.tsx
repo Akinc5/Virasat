@@ -10,14 +10,10 @@ import {
   ChevronRight, 
   Shuffle, 
   Sparkles, 
-  CheckCircle2, 
   LayoutGrid, 
   Layers,
   ArrowRight,
-  ExternalLink,
   MapPin,
-  Calendar,
-  Compass,
   BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -323,7 +319,7 @@ export function HeritageFlashcards({ sites }: HeritageFlashcardsProps) {
                         <div className="flex items-center gap-1.5 overflow-hidden">
                           <BookOpen size={12} className="text-[var(--hv-gold)] shrink-0" />
                           <span className="text-[10px] text-[var(--hv-text-primary)] truncate font-serif italic">
-                            Book: "{HERITAGE_BOOKS[activeSite.slug][0].title}"
+                            Book: &quot;{HERITAGE_BOOKS[activeSite.slug][0].title}&quot;
                           </span>
                         </div>
                         <Link 
@@ -498,7 +494,7 @@ export function HeritageFlashcards({ sites }: HeritageFlashcardsProps) {
                           <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20 flex items-center gap-1.5">
                             <BookOpen size={11} className="text-[var(--hv-gold)] shrink-0" />
                             <span className="text-[9px] text-[var(--hv-text-primary)] truncate font-serif italic">
-                              "{HERITAGE_BOOKS[site.slug][0].title.split(":")[0]}"
+                              &quot;{HERITAGE_BOOKS[site.slug][0].title.split(":")[0]}&quot;
                             </span>
                           </div>
                         )}

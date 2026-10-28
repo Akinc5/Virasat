@@ -1,369 +1,185 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Globe, Shield, Eye, Layers } from "lucide-react";
+import { ArrowRight, Box, MapPin, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { HeritageCard } from "@/components/heritage/HeritageCard";
-import { TajMahalHeroFrame } from "@/components/heritage/TajMahalHeroFrame";
-import { HeritageFlashcards } from "@/components/heritage/HeritageFlashcards";
 import { Section, SectionHeader } from "@/components/layout/PageWrapper";
 import { getFeaturedSites, sampleHeritageSites } from "@/data/sample-heritage-sites";
+import { MONUMENT_HOTSPOTS } from "@/data/monument-hotspots";
+import { MonumentShowcase, type ShowcaseMonument } from "@/components/home/MonumentShowcase";
+import { HeritageAtlas, type AtlasSite } from "@/components/home/HeritageAtlas";
+import { Reveal } from "@/components/ui/Reveal";
+import { realModels, hasTour } from "@/lib/models";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "HeritageVerse — Digital Preservation of India's Cultural Heritage",
+  title: "Virasat — India's Heritage in 3D and AR",
   description:
-    "Explore India's most iconic heritage sites through immersive digital, AR, and VR experiences. Start your journey today.",
+    "Explore India's most iconic heritage sites as interactive 3D models, take guided tours and place them in your room with AR.",
 };
-
-const whyPreserve = [
-  {
-    icon: Shield,
-    title: "Protect Against Loss",
-    description:
-      "Climate change, urbanization, and neglect threaten thousands of heritage sites. Digital preservation creates a permanent record for future generations.",
-  },
-  {
-    icon: Globe,
-    title: "Global Accessibility",
-    description:
-      "Anyone on Earth can explore India's ancient wonders without barriers of cost, distance, or ability. Heritage belongs to everyone.",
-  },
-  {
-    icon: Eye,
-    title: "Immersive Discovery",
-    description:
-      "Go beyond photographs. Walk through temples, study intricate carvings, and experience architecture in three dimensions.",
-  },
-  {
-    icon: Layers,
-    title: "Living History",
-    description:
-      "Timeline events, architectural analysis, and cultural context make each site come alive with stories that connect past and present.",
-  },
-];
 
 export default async function HomePage() {
   const featured = getFeaturedSites(3);
   const allSites = sampleHeritageSites;
+  const heroSite = allSites.find((s) => s.slug === "taj-mahal") ?? allSites[0];
+
+  // Show the most realistic model each site has: a detailed model or scan
+  // when there is one, otherwise our Blender reconstruction.
+  const showcase: ShowcaseMonument[] = allSites
+    .filter((site) => realModels(site).length > 0)
+    .map((site) => {
+      const models = realModels(site);
+      const model = models.find((m) => m.source === "scan") ?? models[0];
+      return {
+        slug: site.slug,
+        name: site.name,
+        place: `${site.city}, ${site.state}`,
+        shortDescription: site.shortDescription,
+        modelUrl: model.modelUrl,
+        displayScale: model.displayScale ?? 1,
+        orbit: model.cameraOrbit,
+        credit: "Prepared in Blender · Virasat",
+        tourStops: hasTour(site) ? (MONUMENT_HOTSPOTS[site.slug] ?? []).filter((h) => h.onModel !== false).length : 0,
+        modelCount: models.length + (site.sketchfabModelId ? 1 : 0),
+        period: site.yearBuilt ? `c. ${site.yearBuilt} CE` : site.historicalPeriod,
+      };
+    });
+
+  const atlas: AtlasSite[] = allSites.map((site) => ({
+    slug: site.slug,
+    name: site.name,
+    city: site.city,
+    state: site.state,
+    latitude: site.latitude,
+    longitude: site.longitude,
+    heroImage: site.heroImage,
+    category: site.category,
+    has3D: realModels(site).length > 0,
+  }));
+
+  const stats = [
+    { icon: MapPin, value: allSites.length, label: "Heritage sites" },
+    { icon: Box, value: showcase.length, label: "Interactive 3D models" },
+    { icon: Smartphone, value: "AR", label: "On your phone" },
+  ];
 
   return (
     <div className="relative bg-[var(--hv-bg-primary)]">
-      {/* Subtle texture layout layer for the entire page background */}
       <div className="ambient-texture-layer" />
 
-      {/* ── HERO SECTION ─────────────────────────────────────── */}
-      <section
-        className="relative min-h-screen flex items-center justify-center py-20 overflow-hidden"
-        aria-label="Hero section"
-      >
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            {/* Left Column: Typography Layout */}
-            <div className="lg:col-span-7 animate-fade-in-up text-left">
-              <div className="flex flex-col gap-1.5 mb-6">
-                <div className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] font-semibold text-[var(--hv-blue)] uppercase">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--hv-gold)]" />
-                  Preserving India's Cultural Memory
-                </div>
-                <div className="flex gap-3 text-[8px] font-mono text-[var(--hv-text-muted)] uppercase tracking-[0.2em] mt-0.5">
-                  <span>CATALOG REF: VR-2026-N1</span>
-                  <span>•</span>
-                  <span>PLATE REF: 01 / 05</span>
-                </div>
-              </div>
-
-              <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-wide text-[var(--hv-text-primary)] leading-[1.1] mb-4">
-                Explore India's <br />
-                <span className="italic font-serif text-[var(--hv-gold)] tracking-normal normal-case block mt-2">
-                  Cultural Legacy
-                </span>
-              </h1>
-
-              {/* Refined Mughal-inspired floral line art ornament */}
-              <div className="w-24 h-4 my-5 text-[var(--hv-gold)] opacity-70" aria-hidden="true">
-                <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                  <path d="M0 10 Q25 4, 50 10 T100 10" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
-                  <path d="M25 8 C20 4, 15 5, 25 8Z" fill="currentColor"/>
-                  <path d="M45 9 C41 4, 37 5, 45 9Z" fill="currentColor"/>
-                  <path d="M65 10 C61 5, 57 6, 65 10Z" fill="currentColor"/>
-                  <path d="M35 12 C37 16, 42 15, 35 12Z" fill="currentColor"/>
-                  <path d="M55 11 C57 15, 62 14, 55 11Z" fill="currentColor"/>
-                  <circle cx="50" cy="10" r="1.5" fill="currentColor"/>
-                </svg>
-              </div>
-
-              <p className="text-sm md:text-base text-[var(--hv-text-secondary)] font-serif italic max-w-xl leading-relaxed mb-8">
-                Step inside ancient temples, wander through forgotten empires, and experience India's most iconic architectural achievements through detailed digital archives.
+      {/* ── HERO ─────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden pt-28 pb-16 md:pt-32 md:pb-24" aria-label="Introduction">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <div className="lg:col-span-7 animate-fade-in-up">
+              <p className="inline-flex items-center gap-2 text-[10px] tracking-[0.25em] font-semibold text-[var(--hv-blue)] uppercase mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--hv-gold)]" />
+                India&apos;s heritage in 3D
               </p>
-
-              <div className="flex flex-wrap gap-4">
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium tracking-wide text-[var(--hv-text-primary)] leading-[1.1]">
+                Explore India&apos;s
+                <span className="block mt-2 italic font-serif text-[var(--hv-gold)] tracking-normal">Cultural Legacy</span>
+              </h1>
+              <p className="mt-6 text-base text-[var(--hv-text-secondary)] font-serif italic max-w-lg leading-relaxed">
+                Turn, zoom and walk around the monuments in 3D, hear their stories, then place them on your table in AR.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/explore">
                   <Button
                     variant="primary"
                     size="lg"
                     rightIcon={<ArrowRight size={16} />}
-                    id="hero-explore-btn"
                     className="text-xs tracking-widest uppercase font-semibold"
                   >
-                    Explore Directory
+                    Explore sites
                   </Button>
                 </Link>
-                <Link href="/experience/taj-mahal">
-                  <Button variant="outline" size="lg" id="hero-experience-btn" className="text-xs tracking-widest uppercase font-semibold">
-                    3D Experience
+                <Link href={`/experience/${heroSite.slug}`}>
+                  <Button variant="outline" size="lg" className="text-xs tracking-widest uppercase font-semibold">
+                    Open 3D viewer
                   </Button>
                 </Link>
               </div>
 
-              {/* Stats Row */}
-              <div className="grid grid-cols-4 gap-4 pt-10 mt-12 border-t border-[var(--hv-bg-border)]">
-                {[
-                  { value: `${allSites.length}+`, label: "Archived Sites" },
-                  { value: "5", label: "UNESCO Sites" },
-                  { value: "3D", label: "Interactive Models" },
-                  { value: "3500+", label: "Years of History" },
-                ].map((stat) => (
-                  <div key={stat.label} className="pr-2 border-r border-[var(--hv-bg-border)] last:border-none">
-                    <p className="font-display text-lg sm:text-xl font-medium text-[var(--hv-gold)]">
-                      {stat.value}
-                    </p>
-                    <p className="text-[9px] font-semibold text-[var(--hv-text-secondary)] uppercase tracking-wider mt-1">
-                      {stat.label}
-                    </p>
+              <dl className="mt-12 pt-8 grid grid-cols-3 gap-4 max-w-lg border-t border-[var(--hv-bg-border)]">
+                {stats.map(({ icon: Icon, value, label }) => (
+                  <div key={label}>
+                    <dt className="sr-only">{label}</dt>
+                    <dd className="flex items-center gap-2 font-display text-2xl text-[var(--hv-text-primary)]">
+                      <Icon size={16} className="text-[var(--hv-gold-muted)]" />
+                      {value}
+                    </dd>
+                    <p className="mt-1 text-[11px] text-[var(--hv-text-muted)]">{label}</p>
                   </div>
                 ))}
-              </div>
+              </dl>
             </div>
 
-            {/* Right Column: Interactive Portal Taj Mahal with Hover Pop-up & 3D explore */}
-            <div className="lg:col-span-5 flex flex-col justify-center items-center">
-              <TajMahalHeroFrame />
+            <div className="lg:col-span-5 hidden sm:block">
+              <Link
+                href={`/heritage/${heroSite.slug}`}
+                className="group block max-w-sm mx-auto arch-frame-tall shadow-xl shadow-[#6B5E52]/10"
+                aria-label={`Read about ${heroSite.name}`}
+              >
+                <div className="arch-image-mask aspect-[4/5]">
+                  <Image
+                    src={heroSite.heroImage}
+                    alt={heroSite.name}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 384px, 30vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/55 to-transparent" />
+                  <p className="absolute bottom-5 inset-x-0 text-center text-white">
+                    <span className="block font-display text-lg tracking-wide">{heroSite.name}</span>
+                    <span className="text-[11px] tracking-[0.2em] uppercase text-white/80">
+                      {heroSite.city}, {heroSite.state}
+                    </span>
+                  </p>
+                </div>
+              </Link>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* ── HERITAGE FLASHCARDS SECTION ──────────────────────── */}
-      <Section id="heritage-flashcards" className="border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]/40">
-        <SectionHeader
-          eyebrow="Interactive Discovery Deck"
-          title="Heritage Flashcards"
-          subtitle="Flip through all iconic monuments to uncover architectural secrets, mathematical symmetry, and direct 3D portals."
-        />
-        <HeritageFlashcards sites={allSites} />
+      {/* ── LIVE 3D SHOWCASE ─────────────────────────────────── */}
+      <Section id="3d-preview" className="border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]/40">
+        <Reveal>
+          <MonumentShowcase monuments={showcase} />
+        </Reveal>
       </Section>
 
       {/* ── FEATURED SITES ───────────────────────────────────── */}
       <Section id="featured-sites" className="border-t border-[var(--hv-bg-border)]">
-        <SectionHeader
-          eyebrow="Featured Directory"
-          title="Iconic Heritage Sites"
-          subtitle="A curated digital collection preserving key architectural wonders of the subcontinent — presented with equal visual importance and historical reverence."
-        />
-
-        {/* Mughal-inspired botanical divider line ornament */}
-        <div className="floral-divider mb-14 -mt-6" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[var(--hv-gold)] w-5 h-5">
-            <path d="M12 2C12 2 10.5 6 12 8.5C13.5 6 12 2 12 2Z" fill="currentColor"/>
-            <path d="M12 22C12 22 13.5 18 12 15.5C10.5 18 12 22 12 22Z" fill="currentColor"/>
-            <path d="M2 12C2 12 6 10.5 8.5 12C6 13.5 2 12 2 12Z" fill="currentColor"/>
-            <path d="M22 12C22 12 18 13.5 15.5 12C18 10.5 22 12 22 12Z" fill="currentColor"/>
-            <circle cx="12" cy="12" r="2" fill="currentColor"/>
-          </svg>
+        <SectionHeader eyebrow="Featured" title="Iconic heritage sites" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featured.map((site) => (
+            <HeritageCard key={site.id} site={site} />
+          ))}
         </div>
-        
-        {/* Editorial Offset Grid to establish visual rhythm */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-16 items-start">
-          {featured.map((site, index) => {
-            // Apply subtle offsets: Card 1 (0), Card 2 (+8), Card 3 (+4)
-            const offsets = ["translate-y-0", "md:translate-y-8", "md:translate-y-4"];
-            return (
-              <div key={site.id} className={offsets[index % 3]}>
-                <HeritageCard site={site} variant="featured" />
-              </div>
-            );
-          })}
-        </div>
-        
-        <div className="text-center pt-8">
+        <div className="text-center mt-12">
           <Link href="/explore">
             <Button
               variant="outline"
               size="lg"
               rightIcon={<ArrowRight size={14} />}
-              id="featured-view-all-btn"
               className="text-xs tracking-widest uppercase font-semibold"
             >
-              Browse Complete Catalog ({allSites.length} entries)
+              View all {allSites.length} sites
             </Button>
           </Link>
         </div>
       </Section>
 
-      {/* ── WHY DIGITAL PRESERVATION ─────────────────────────── */}
-      <Section id="why-preserve" className="border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]">
-        <SectionHeader
-          eyebrow="Archival Mission"
-          title="Why Digital Preservation Matters"
-          subtitle="We document cultural architecture to ensure permanent global accessibility and safeguard historical monuments against loss."
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {whyPreserve.map(({ icon: Icon, title, description }, index) => (
-            <div
-              key={title}
-              className="flex items-start gap-5 p-2"
-            >
-              <div className="w-10 h-10 rounded-sm border border-[var(--hv-blue)]/30 flex items-center justify-center flex-shrink-0 text-[var(--hv-blue)] bg-[var(--hv-bg-primary)]">
-                <Icon size={18} strokeWidth={1.5} />
-              </div>
-              <div>
-                <h3 className="font-display font-medium text-base text-[var(--hv-text-primary)] mb-1.5 flex items-center gap-2">
-                  <span className="text-xs font-serif italic text-[var(--hv-gold)]">0{index + 1}.</span>
-                  {title}
-                </h3>
-                <p className="text-xs text-[var(--hv-text-secondary)] font-serif italic leading-relaxed">
-                  {description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* ── HERITAGE ATLAS ───────────────────────────────────── */}
+      <Section id="heritage-atlas" className="border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]/40">
+        <SectionHeader eyebrow="Atlas" title="Journey across India" />
+        <Reveal>
+          <HeritageAtlas sites={atlas} />
+        </Reveal>
       </Section>
-
-      {/* ── 3D EXPERIENCE PREVIEW ────────────────────────────── */}
-      <Section id="3d-preview" className="border-t border-[var(--hv-bg-border)]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--hv-blue)] mb-3">
-              Technical Preservation
-            </p>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--hv-text-primary)] leading-tight mb-5">
-              Immersive Spatial Records
-            </h2>
-            <p className="text-sm text-[var(--hv-text-secondary)] font-serif italic leading-relaxed mb-6">
-              Our digital archive uses WebGL meshes and high-resolution spatial recordings. Explore heritage sites in full three dimensions, walk through interactive wireframe models, and analyze architectural structures from any browser.
-            </p>
-            <ul className="space-y-3.5 mb-8">
-              {[
-                "High-fidelity 3D structural mesh rendering",
-                "Scalable layouts optimized for low bandwidth connections",
-                "Contextual historical timelines linked to blueprints",
-                "Educational descriptions with vector map projections",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-xs text-[var(--hv-text-secondary)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--hv-gold)] mt-1.5 flex-shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <Link href="/experience/taj-mahal">
-              <Button variant="primary" size="lg" id="3d-preview-cta-btn" className="text-xs tracking-widest uppercase font-semibold">
-                Launch 3D Model Explorer
-              </Button>
-            </Link>
-          </div>
-
-          {/* 3D Wireframe Viewer Card with blueprint technical design */}
-          <div className="relative">
-            <div className="rounded-sm bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)] overflow-hidden aspect-square flex items-center justify-center p-6 relative">
-              {/* Technical Blueprint grid */}
-              <div className="absolute inset-0 pointer-events-none opacity-[0.06] bg-[linear-gradient(to_right,var(--hv-blue)_1px,transparent_1px),linear-gradient(to_bottom,var(--hv-blue)_1px,transparent_1px)] bg-[size:16px_16px]" />
-              
-              {/* Technical markers */}
-              <div className="absolute top-4 left-4 text-[8px] font-mono text-[var(--hv-blue-dark)] opacity-60">
-                SYS.REF: 3D-GLTF-LOD3
-              </div>
-              <div className="absolute top-4 right-4 text-[8px] font-mono text-[var(--hv-blue-dark)] opacity-60 flex gap-2">
-                <span>AZIMUTH: 180°</span>
-                <span>ELEV: 45°</span>
-              </div>
-              <div className="absolute bottom-4 left-4 text-[8px] font-mono text-[var(--hv-blue-dark)] opacity-60">
-                SCALE: 1:250
-              </div>
-              <div className="absolute bottom-4 right-4 text-[8px] font-mono text-[var(--hv-blue-dark)] opacity-60">
-                LIDAR POINT MESH
-              </div>
-              
-              <div className="text-center relative z-10">
-                <div
-                  className="w-28 h-28 rounded-full border border-[var(--hv-blue)]/20 flex items-center justify-center mx-auto mb-6 relative"
-                  aria-hidden="true"
-                >
-                  {/* Rotating technical rings */}
-                  <div className="absolute inset-0 rounded-full border border-dashed border-[var(--hv-blue)]/15 animate-spin" style={{ animationDuration: "25s" }} />
-                  <div className="absolute inset-2 rounded-full border border-[var(--hv-gold)]/20 animate-spin" style={{ animationDuration: "12s", animationDirection: "reverse" }} />
-                  
-                  {/* X and Y coordinate lines */}
-                  <div className="absolute left-0 right-0 h-[1px] bg-[var(--hv-blue)]/20" />
-                  <div className="absolute top-0 bottom-0 w-[1px] bg-[var(--hv-blue)]/20" />
-                  
-                  {/* Outer wireframe diamond */}
-                  <div className="w-14 h-14 border border-[var(--hv-blue)]/40 rotate-45 flex items-center justify-center bg-[var(--hv-bg-primary)]/40 backdrop-blur-[1px]">
-                    <div className="w-8 h-8 border border-dashed border-[var(--hv-gold)]/40 rotate-45" />
-                  </div>
-                </div>
-                <p className="font-display text-base font-semibold tracking-wider text-[var(--hv-text-primary)] mb-1">
-                  Spatial Mesh Viewer
-                </p>
-                <p className="text-[10px] text-[var(--hv-text-secondary)] font-serif italic">
-                  WebGL Blueprint Rendering
-                </p>
-                <div className="flex flex-wrap gap-1.5 justify-center mt-5">
-                  {["OBJ_MESH", "360_SCAN", "LIDAR_POINT"].map((mode) => (
-                    <span
-                      key={mode}
-                      className="px-2 py-0.5 rounded-none text-[8px] font-mono bg-[var(--hv-bg-primary)]/80 border border-[var(--hv-bg-border)] text-[var(--hv-text-secondary)]"
-                    >
-                      {mode}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {/* Floating badge */}
-            <div className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-none bg-[var(--hv-text-primary)] text-[var(--hv-bg-primary)] border border-[var(--hv-bg-border)] text-[8px] tracking-wider uppercase font-semibold">
-              🏛 Spatial Record Ref: IN-3D
-            </div>
-          </div>
-
-        </div>
-      </Section>
-
-      {/* ── CALL TO ACTION ───────────────────────────────────── */}
-      <section className="py-24 relative overflow-hidden border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]" id="cta">
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--hv-blue)] mb-4 block">
-            Digital Collections
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--hv-text-primary)] mb-5">
-            Start Exploring India's Heritage Archive
-          </h2>
-          <p className="text-[var(--hv-text-secondary)] font-serif italic text-sm md:text-base mb-8 max-w-2xl mx-auto leading-relaxed">
-            Walk through the corridors of history. Browse our curated digital catalog of monuments, interact with 3D structural models, and read expert commentary.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/explore">
-              <Button
-                variant="primary"
-                size="lg"
-                rightIcon={<ArrowRight size={16} />}
-                id="cta-explore-btn"
-                className="text-xs tracking-widest uppercase font-semibold"
-              >
-                Explore Collection
-              </Button>
-            </Link>
-            <Link href="/about">
-              <Button variant="outline" size="lg" id="cta-about-btn" className="text-xs tracking-widest uppercase font-semibold">
-                Read Mission
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
