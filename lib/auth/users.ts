@@ -1,47 +1,35 @@
 // ============================================================
-// Email + password accounts, stored in a JSON file until the
-// Postgres database is connected (then move this to Prisma).
+// Email + password accounts (stored in lib/store).
 //
 // Passwords are hashed with scrypt and a per-user random salt;
 // the plain password is never written anywhere.
+//
+// Roles: "admin" for emails listed in ADMIN_EMAILS (comma-separated)
+// or users an admin has promoted; everyone else is "user".
 // ============================================================
 
 import { randomBytes, randomUUID, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
-import { tmpdir } from "node:os";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { promisify } from "node:util";
+import { collection } from "@/lib/store";
+import { normaliseEmail, roleFor, type Role } from "@/lib/auth/roles";
+
+export { normaliseEmail, type Role };
 
 const scrypt = promisify(scryptCb) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>;
-
-// Locally: .data/users.json (git-ignored). Serverless hosts such as Netlify
-// only allow writes under the temp dir, which is wiped between deploys, so
-// accounts there are short-lived until the database is connected.
-const SERVERLESS = Boolean(process.env.NETLIFY || process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
-const USERS_FILE =
-  process.env.USERS_FILE ??
-  (SERVERLESS ? path.join(tmpdir(), "virasat-users.json") : path.join(process.cwd(), ".data", "users.json"));
 
 export interface StoredUser {
   id: string;
   name: string;
   email: string;
   passwordHash: string; // "salt:hash", both hex
+  role: Role;
   createdAt: string;
 }
 
-async function readUsers(): Promise<StoredUser[]> {
-  try {
-    return JSON.parse(await readFile(/*turbopackIgnore: true*/ USERS_FILE, "utf-8")) as StoredUser[];
-  } catch {
-    return [];
-  }
-}
+export type PublicUser = Omit<StoredUser, "passwordHash">;
 
-async function writeUsers(users: StoredUser[]) {
-  await mkdir(/*turbopackIgnore: true*/ path.dirname(USERS_FILE), { recursive: true });
-  await writeFile(/*turbopackIgnore: true*/ USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
-}
+// Keyed by normalised email so sign-in is a single lookup
+const users = collection<StoredUser>("users");
 
 async function hashPassword(password: string) {
   const salt = randomBytes(16);
@@ -57,34 +45,49 @@ async function passwordMatches(password: string, stored: string) {
   return timingSafeEqual(actual, expected);
 }
 
-export function normaliseEmail(email: string) {
-  return email.trim().toLowerCase();
+function toPublic({ passwordHash: _hash, ...user }: StoredUser): PublicUser {
+  return { ...user, role: roleFor(user) };
 }
 
 export async function createUser(name: string, email: string, password: string) {
-  const users = await readUsers();
-  const normalised = normaliseEmail(email);
-  if (users.some((u) => u.email === normalised)) {
-    throw new Error("EMAIL_TAKEN");
-  }
+  const key = normaliseEmail(email);
+  if (await users.get(key)) throw new Error("EMAIL_TAKEN");
   const user: StoredUser = {
     id: randomUUID(),
     name: name.trim(),
-    email: normalised,
+    email: key,
     passwordHash: await hashPassword(password),
+    role: "user",
     createdAt: new Date().toISOString(),
   };
-  await writeUsers([...users, user]);
-  return user;
+  await users.set(key, user);
+  return toPublic(user);
 }
 
 /** Returns the user when the email and password match, otherwise null. */
 export async function verifyUser(email: string, password: string) {
-  const user = (await readUsers()).find((u) => u.email === normaliseEmail(email));
+  const user = await users.get(normaliseEmail(email));
   if (!user) {
     // Spend the same time hashing so response time doesn't reveal which emails exist
     await hashPassword(password);
     return null;
   }
-  return (await passwordMatches(password, user.passwordHash)) ? user : null;
+  return (await passwordMatches(password, user.passwordHash)) ? toPublic(user) : null;
+}
+
+export async function listUsers(): Promise<PublicUser[]> {
+  return (await users.list()).map(toPublic).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function setUserRole(email: string, role: Role) {
+  const key = normaliseEmail(email);
+  const user = await users.get(key);
+  if (!user) throw new Error("NOT_FOUND");
+  await users.set(key, { ...user, role });
+}
+
+/** Fresh role from storage (a role change applies before the cookie is renewed). */
+export async function currentRole(email: string): Promise<Role> {
+  const user = await users.get(normaliseEmail(email));
+  return roleFor({ email, role: user?.role });
 }

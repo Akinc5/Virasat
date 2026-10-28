@@ -7,6 +7,7 @@
 // ============================================================
 
 import type { NextAuthConfig } from "next-auth";
+import { roleFor, type Role } from "@/lib/auth/roles";
 
 export const authConfig = {
   providers: [],
@@ -20,9 +21,15 @@ export const authConfig = {
     signIn: "/login",
   },
   callbacks: {
+    async jwt({ token, user }) {
+      // On sign-in, copy the role into the signed cookie
+      if (user) token.role = roleFor({ email: user.email, role: (user as { role?: Role }).role });
+      return token;
+    },
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
+        session.user.role = (token.role as Role | undefined) ?? "user";
       }
       return session;
     },

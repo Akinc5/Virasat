@@ -12,11 +12,12 @@ const footerLinks = {
     { label: "3D Experiences", href: "/experience/taj-mahal" },
     { label: "Guided 3D Tours", href: "/experience/taj-mahal" },
     { label: "View in AR", href: "/experience/hampi" },
+    { label: "Heritage Library", href: "/library" },
   ],
   Project: [
     { label: "About Virasat", href: "/about" },
     { label: "Credits & licences", href: "/credits" },
-    { label: "Sign in", href: "/login" },
+    { label: "My account", href: "/account" },
   ],
 };
 

@@ -13,6 +13,9 @@ import { sampleHeritageSites } from "@/data/sample-heritage-sites";
 import { ExperienceViewer } from "@/components/experience/ExperienceViewer";
 import { formatYear } from "@/lib/utils";
 import { hasTour, realModels } from "@/lib/models";
+import { VISIT_INFO } from "@/data/travel";
+import { HERITAGE_BOOKS } from "@/data/heritage-books";
+import { PlanVisit } from "@/components/travel/PlanVisit";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -41,6 +44,8 @@ export default async function HeritageDetailPage({ params }: PageProps) {
   const related = await getRelatedSites(site.id, 3);
   const has3D = realModels(site).length > 0 || Boolean(site.sketchfabModelId);
   const media = site.media ?? [];
+  const visit = VISIT_INFO[site.slug];
+  const books = HERITAGE_BOOKS[site.slug] ?? [];
 
   const chapters = [
     { id: "overview", label: "Overview", content: site.description },
@@ -61,7 +66,9 @@ export default async function HeritageDetailPage({ params }: PageProps) {
     ...chapters.map((c) => ({ id: c.id, label: c.label })),
     ...(media.length > 0 ? [{ id: "gallery", label: "Gallery" }] : []),
     ...(has3D ? [{ id: "3d-experience", label: "3D model" }] : []),
+    ...(visit ? [{ id: "plan", label: "Plan your visit" }] : []),
     ...(site.timelineEvents?.length ? [{ id: "timeline", label: "Timeline" }] : []),
+    ...(books.length ? [{ id: "books-section", label: "Books" }] : []),
   ];
 
   return (
@@ -140,6 +147,25 @@ export default async function HeritageDetailPage({ params }: PageProps) {
                   </p>
                 </div>
               )}
+
+              {books.length > 0 && (
+                <div className="rounded-2xl bg-[var(--hv-bg-card)] border border-[var(--hv-bg-border)] p-6">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--hv-blue)] mb-3">Recommended reading</p>
+                  <ul className="space-y-3">
+                    {books.map((b) => (
+                      <li key={b.id}>
+                        <Link href={`/library/order/${b.id}`} className="group block">
+                          <span className="block text-sm text-[var(--hv-text-primary)] leading-snug group-hover:text-[var(--hv-blue-dark)]">{b.title}</span>
+                          <span className="text-[11px] text-[var(--hv-text-muted)]">{b.author} · {b.year}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#books-section" className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-[var(--hv-blue-dark)] hover:underline">
+                    Order a copy <ArrowRight size={12} />
+                  </a>
+                </div>
+              )}
             </div>
           </aside>
         </div>
@@ -159,8 +185,15 @@ export default async function HeritageDetailPage({ params }: PageProps) {
         </Section>
       )}
 
+      {visit && (
+        <Section id="plan" className="scroll-mt-28 border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]/50">
+          <SectionHeader eyebrow="Travel guide" title="Plan your visit" centered={false} />
+          <PlanVisit siteSlug={site.slug} siteName={site.name} lat={site.latitude} lng={site.longitude} info={visit} />
+        </Section>
+      )}
+
       {site.timelineEvents && site.timelineEvents.length > 0 && (
-        <Section id="timeline" className="scroll-mt-28 border-t border-[var(--hv-bg-border)] bg-[var(--hv-bg-secondary)]/50">
+        <Section id="timeline" className="scroll-mt-28 border-t border-[var(--hv-bg-border)]">
           <SectionHeader eyebrow="Through the centuries" title="Timeline" centered={false} />
           <div className="max-w-3xl">
             <HeritageTimeline events={site.timelineEvents} />
@@ -168,7 +201,7 @@ export default async function HeritageDetailPage({ params }: PageProps) {
         </Section>
       )}
 
-      <Section id="books-section">
+      <Section id="books-section" className="scroll-mt-28 border-t border-[var(--hv-bg-border)]">
         <HeritageBooks site={site} />
       </Section>
 

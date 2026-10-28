@@ -35,7 +35,7 @@ const providers: Provider[] = [
       const password = typeof credentials?.password === "string" ? credentials.password : "";
       if (!email || !password) return null;
       const user = await verifyUser(email, password);
-      return user ? { id: user.id, name: user.name, email: user.email } : null;
+      return user ? { id: user.id, name: user.name, email: user.email, role: user.role } : null;
     },
   }),
 ];

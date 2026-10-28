@@ -300,3 +300,16 @@ export const HERITAGE_BOOKS: Record<string, HeritageBook[]> = {
     },
   ],
 };
+
+export const ALL_BOOKS: HeritageBook[] = Object.values(HERITAGE_BOOKS).flat();
+
+export function findBook(id: string) {
+  return ALL_BOOKS.find((b) => b.id === id) ?? null;
+}
+
+/** Bookshop search for a title; adds the Amazon Associates tag when AMAZON_ASSOCIATE_TAG is set. */
+export function bookshopUrl(book: HeritageBook) {
+  const q = new URLSearchParams({ k: `${book.title} ${book.author}`, i: "stripbooks" });
+  if (process.env.AMAZON_ASSOCIATE_TAG) q.set("tag", process.env.AMAZON_ASSOCIATE_TAG);
+  return `https://www.amazon.in/s?${q.toString()}`;
+}

@@ -549,6 +549,15 @@ h1, h2, h3, h4 {
   background: var(--hv-blue-dark);
   transform: rotate(-45deg) scale(1.15);
 }
+.hv-map-pin--home {
+  background: var(--hv-text-primary);
+  width: 38px;
+  height: 38px;
+}
+.hv-map-pin--home span {
+  color: var(--hv-gold-light);
+  font-size: 15px;
+}
 .hv-map-popup-wrap .leaflet-popup-content-wrapper {
   border-radius: 16px;
   padding: 0;
