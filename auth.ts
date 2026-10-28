@@ -20,6 +20,7 @@ import type { Provider } from "next-auth/providers";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { verifyUser } from "@/lib/auth/users";
+import { authConfig } from "@/auth.config";
 
 export const googleEnabled = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
@@ -41,22 +42,6 @@ const providers: Provider[] = [
 if (googleEnabled) providers.push(Google);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers,
-  session: {
-    strategy: "jwt",
-  },
-  // Auth.js auto-trusts localhost and Vercel; any other host (Render,
-  // Railway, a VPS, etc.) needs this or requests fail with UntrustedHost.
-  trustHost: true,
-  pages: {
-    signIn: "/login",
-  },
-  callbacks: {
-    async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-      }
-      return session;
-    },
-  },
 });

@@ -7,14 +7,20 @@
 // ============================================================
 
 import { randomBytes, randomUUID, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
+import { tmpdir } from "node:os";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 
 const scrypt = promisify(scryptCb) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>;
 
-// Outside public/ and git-ignored; override with USERS_FILE in production.
-const USERS_FILE = process.env.USERS_FILE ?? path.join(process.cwd(), ".data", "users.json");
+// Locally: .data/users.json (git-ignored). Serverless hosts such as Netlify
+// only allow writes under the temp dir, which is wiped between deploys, so
+// accounts there are short-lived until the database is connected.
+const SERVERLESS = Boolean(process.env.NETLIFY || process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const USERS_FILE =
+  process.env.USERS_FILE ??
+  (SERVERLESS ? path.join(tmpdir(), "virasat-users.json") : path.join(process.cwd(), ".data", "users.json"));
 
 export interface StoredUser {
   id: string;
@@ -26,15 +32,15 @@ export interface StoredUser {
 
 async function readUsers(): Promise<StoredUser[]> {
   try {
-    return JSON.parse(await readFile(USERS_FILE, "utf-8")) as StoredUser[];
+    return JSON.parse(await readFile(/*turbopackIgnore: true*/ USERS_FILE, "utf-8")) as StoredUser[];
   } catch {
     return [];
   }
 }
 
 async function writeUsers(users: StoredUser[]) {
-  await mkdir(path.dirname(USERS_FILE), { recursive: true });
-  await writeFile(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+  await mkdir(/*turbopackIgnore: true*/ path.dirname(USERS_FILE), { recursive: true });
+  await writeFile(/*turbopackIgnore: true*/ USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
 }
 
 async function hashPassword(password: string) {
