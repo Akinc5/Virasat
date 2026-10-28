@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/explore", label: "Explore" },
   { href: "/experience/taj-mahal", label: "3D Viewer" },
+  { href: "/library", label: "Library" },
   { href: "/about", label: "About" },
 ];
 

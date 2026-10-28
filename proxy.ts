@@ -1,8 +1,8 @@
 // ============================================================
 // HeritageVerse — Route Proxy (Next.js 16 renamed `middleware` -> `proxy`)
 //
-// Optimistic auth check: redirects unauthenticated visitors away
-// from /admin before the route renders. Session data still comes
+// Optimistic auth check: sends signed-out visitors from /account and
+// /admin to the login page, and non-admins away from /admin. Session data still comes
 // from the signed JWT cookie set by Auth.js.
 // ============================================================
 
@@ -15,15 +15,22 @@ import { authConfig } from "@/auth.config";
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
+  const { pathname } = req.nextUrl;
+  const needsAdmin = pathname.startsWith("/admin");
+  const needsUser = needsAdmin || pathname.startsWith("/account");
+  if (!needsUser) return;
 
-  if (isAdminRoute && !req.auth) {
+  if (!req.auth) {
     const signInUrl = new URL("/login", req.nextUrl.origin);
-    signInUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
+    signInUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(signInUrl);
+  }
+  // Optimistic check only — admin pages and actions re-check the role server-side
+  if (needsAdmin && req.auth.user?.role !== "admin") {
+    return NextResponse.redirect(new URL("/account?denied=admin", req.nextUrl.origin));
   }
 });
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/account/:path*"],
 };
