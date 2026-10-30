@@ -48,7 +48,8 @@ export async function signUpWithPassword(form: FormData) {
     await createUser(name, email, password as string);
   } catch (err) {
     if (err instanceof Error && err.message === "EMAIL_TAKEN") back("signup", "taken", callbackUrl);
-    throw err;
+    console.error("Sign-up failed", err);
+    back("signup", "server", callbackUrl);
   }
   await signInOrBack(email, password as string, "signup", callbackUrl);
 }

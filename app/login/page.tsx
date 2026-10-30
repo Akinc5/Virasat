@@ -19,6 +19,7 @@ const ERRORS: Record<string, string> = {
   email: "Please enter a valid email address.",
   password: "Use a password of at least 8 characters.",
   taken: "An account with this email already exists. Sign in instead.",
+  server: "We couldn't create your account right now. Please try again in a minute.",
 };
 
 const inputClass =

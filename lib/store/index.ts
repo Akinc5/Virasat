@@ -11,6 +11,7 @@
 // ============================================================
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 
 export interface Collection<T> {
@@ -24,8 +25,8 @@ type Driver = <T>(name: string) => Collection<T>;
 
 // ── Netlify Blobs ───────────────────────────────────────────
 async function netlifyDriver(): Promise<Driver | null> {
-  // The Next.js runtime on Netlify injects the Blobs context into functions
-  if (!process.env.NETLIFY_BLOBS_CONTEXT && !process.env.NETLIFY) return null;
+  // The Next.js runtime on Netlify provides the Blobs context to functions;
+  // getStore() throws when it is missing (e.g. local development).
   try {
     const { getStore } = await import("@netlify/blobs");
     getStore({ name: "virasat-probe" }); // throws if the environment isn't configured
@@ -54,7 +55,9 @@ async function netlifyDriver(): Promise<Driver | null> {
 }
 
 // ── Local JSON files ────────────────────────────────────────
-const DATA_DIR = path.join(process.cwd(), ".data");
+// Serverless file systems are read-only outside the temp dir
+const SERVERLESS = Boolean(process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.VERCEL);
+const DATA_DIR = SERVERLESS ? path.join(tmpdir(), "virasat-data") : path.join(process.cwd(), ".data");
 const locks = new Map<string, Promise<unknown>>();
 
 function fileDriver<T>(name: string): Collection<T> {
@@ -98,16 +101,30 @@ function fileDriver<T>(name: string): Collection<T> {
   };
 }
 
-let driver: Promise<Driver> | null = null;
+let driver: Promise<{ name: "netlify-blobs" | "file"; open: Driver }> | null = null;
 
-function getDriver(): Promise<Driver> {
-  driver ??= netlifyDriver().then((d) => d ?? fileDriver);
+function getDriver() {
+  driver ??= netlifyDriver().then((d) => (d ? { name: "netlify-blobs" as const, open: d } : { name: "file" as const, open: fileDriver }));
   return driver;
+}
+
+/** Which backend is active, and whether a write/read round trip works. */
+export async function storeHealth() {
+  const { name, open } = await getDriver();
+  const probe = open<{ at: string }>("health");
+  const at = new Date().toISOString();
+  try {
+    await probe.set("probe", { at });
+    const back = await probe.get("probe");
+    return { driver: name, ok: back?.at === at };
+  } catch (err) {
+    return { driver: name, ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
 }
 
 /** Lazily bound collection: picks the driver on first use. */
 export function collection<T>(name: string): Collection<T> {
-  const bound = getDriver().then((d) => d<T>(name));
+  const bound = getDriver().then((d) => d.open<T>(name));
   return {
     get: async (key) => (await bound).get(key),
     set: async (key, value) => (await bound).set(key, value),
