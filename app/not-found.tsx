@@ -1,12 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft } from "lucide-react";
+
+export const metadata: Metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center max-w-md">
-        <p className="font-display text-8xl font-black text-amber-500/20 mb-4">
+        <p className="font-display text-8xl font-black text-[var(--hv-gold)]/30 mb-4">
           404
         </p>
         <h1 className="font-display text-2xl font-bold text-[var(--hv-text-primary)] mb-3">

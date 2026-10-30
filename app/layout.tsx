@@ -12,6 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://virasatdesh.netlify.app"),
   title: {
     default: "Virasat — Digital Preservation of India's Cultural Heritage",
     template: "%s | Virasat",

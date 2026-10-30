@@ -21,6 +21,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored third-party bundles (model-viewer, Draco decoder)
+    "public/vendor/**",
   ]),
 ]);
 

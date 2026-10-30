@@ -16,7 +16,10 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Maximize2, Minimize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const MODEL_VIEWER_SRC = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
+// Self-hosted (public/vendor) so models still load on flaky networks
+// without reaching Google's CDN; the Draco decoder is served locally too.
+const MODEL_VIEWER_SRC = "/vendor/model-viewer/model-viewer-4.0.0.min.js";
+const DRACO_DECODER_LOCATION = "/vendor/draco/";
 
 export interface ViewerHotspot {
   id: string;
@@ -86,6 +89,9 @@ export function ModelViewer({
   // Load the web component once per page.
   useEffect(() => {
     if (!document.querySelector(`script[src="${MODEL_VIEWER_SRC}"]`)) {
+      // Must be set before the element class is defined
+      const w = window as unknown as { ModelViewerElement?: Record<string, unknown> };
+      w.ModelViewerElement = { ...(w.ModelViewerElement ?? {}), dracoDecoderLocation: DRACO_DECODER_LOCATION };
       const script = document.createElement("script");
       script.type = "module";
       script.src = MODEL_VIEWER_SRC;

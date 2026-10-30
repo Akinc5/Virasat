@@ -58,20 +58,20 @@ export default async function ExperiencePage({ params }: PageProps) {
               </p>
             </div>
             <div className="flex gap-2 text-xs whitespace-nowrap">
-              <span className="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-medium">
-                3D Active
+              <span className="px-2.5 py-1 rounded-full bg-[var(--hv-gold)]/15 border border-[var(--hv-gold)]/30 text-[var(--hv-gold-muted)] font-medium">
+                3D
               </span>
               <span
                 className={`px-2.5 py-1 rounded-full border font-medium ${
                   arReady
-                    ? "bg-purple-500/15 border-purple-500/30 text-purple-600"
-                    : "bg-purple-500/10 border-purple-500/20 text-purple-400"
+                    ? "bg-[var(--hv-blue)]/10 border-[var(--hv-blue)]/30 text-[var(--hv-blue-dark)]"
+                    : "bg-[var(--hv-bg-secondary)] border-[var(--hv-bg-border)] text-[var(--hv-text-muted)]"
                 }`}
                 title={arReady ? "Open this page on a phone and tap “View in your space”" : undefined}
               >
                 {arReady ? "AR Ready" : "AR Soon"}
               </span>
-              <span className="px-2.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 font-medium">
+              <span className="px-2.5 py-1 rounded-full bg-[var(--hv-bg-secondary)] border border-[var(--hv-bg-border)] text-[var(--hv-text-muted)] font-medium">
                 VR Soon
               </span>
             </div>

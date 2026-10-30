@@ -16,21 +16,21 @@ export function ARPlaceholder({ siteName, arReady = false }: ARPlaceholderProps)
   const name = siteName ?? "this heritage site";
   return (
     <div
-      className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-900/10 to-violet-900/10 border border-purple-500/20 p-8 text-center"
+      className="relative rounded-2xl overflow-hidden bg-[var(--hv-bg-card)] border border-[var(--hv-bg-border)] p-8 text-center"
       role="region"
       aria-label={arReady ? "AR mode — available" : "AR mode — coming soon"}
     >
       <div className="absolute inset-0 opacity-10" aria-hidden="true">
-        <div className="absolute top-4 right-4 w-32 h-32 rounded-full border border-purple-400" />
-        <div className="absolute bottom-4 left-4 w-20 h-20 rounded-full border border-violet-400" />
+        <div className="absolute top-4 right-4 w-32 h-32 rounded-full border border-[var(--hv-gold)]" />
+        <div className="absolute bottom-4 left-4 w-20 h-20 rounded-full border border-[var(--hv-blue)]" />
       </div>
 
       <div className="relative z-10">
-        <div className="w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center mx-auto mb-5">
-          <Smartphone size={28} className="text-purple-600" />
+        <div className="w-16 h-16 rounded-2xl bg-[var(--hv-blue)]/10 border border-[var(--hv-blue)]/25 flex items-center justify-center mx-auto mb-5">
+          <Smartphone size={28} className="text-[var(--hv-blue-dark)]" />
         </div>
 
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/25 text-xs text-purple-700 font-medium mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--hv-blue)]/10 border border-[var(--hv-blue)]/25 text-xs text-[var(--hv-blue-dark)] font-medium mb-4">
           {arReady ? <Check size={11} /> : <Zap size={11} />}
           {arReady ? "Available now" : "Coming Soon"}
         </div>
