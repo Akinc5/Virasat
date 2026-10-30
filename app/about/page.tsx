@@ -21,17 +21,17 @@ const roadmapItems = [
   },
   {
     phase: "Phase 2",
-    title: "3D Viewer",
-    status: "development",
+    title: "3D Viewer and Guided Tours",
+    status: "current",
     description:
-      "Interactive Three.js / React Three Fiber viewer for GLTF/GLB models of heritage sites.",
+      "Interactive 3D models of six monuments, prepared in Blender, with narrated guided tours.",
   },
   {
     phase: "Phase 3",
     title: "AR Experience",
-    status: "planned",
+    status: "current",
     description:
-      "WebXR augmented reality — place heritage monuments in your physical environment.",
+      "Place a monument on your table with an Android phone or iPhone, straight from the browser.",
   },
   {
     phase: "Phase 4",
@@ -42,10 +42,10 @@ const roadmapItems = [
   },
   {
     phase: "Phase 5",
-    title: "Community",
+    title: "Classrooms",
     status: "planned",
     description:
-      "User contributions, expert commentary, and collaborative heritage documentation.",
+      "Teacher accounts, worksheets and offline 3D packs for schools.",
   },
 ];
 
@@ -110,7 +110,7 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-[var(--hv-text-secondary)] leading-relaxed">
               <p>
-                India is home to over 3,500 centrally protected monuments, 32 UNESCO World Heritage Sites,
+                India is home to over 3,500 centrally protected monuments, 43 UNESCO World Heritage Sites,
                 and countless local heritage structures — many of which face serious threats from climate change,
                 urban encroachment, and inadequate preservation resources.
               </p>
@@ -128,7 +128,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 gap-4">
             {[
               { value: "3,500+", label: "Protected Monuments" },
-              { value: "32", label: "UNESCO Sites in India" },
+              { value: "43", label: "UNESCO Sites in India" },
               { value: "5,000+", label: "Years of Documented History" },
               { value: "1.4B", label: "People Deserve Access" },
             ].map((stat) => (
@@ -254,7 +254,7 @@ export default function AboutPage() {
                 Start Exploring
               </Button>
             </Link>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/Akinc5/Virasat" target="_blank" rel="noopener noreferrer">
               <Button variant="secondary" id="about-github-btn">
                 View on GitHub
               </Button>
