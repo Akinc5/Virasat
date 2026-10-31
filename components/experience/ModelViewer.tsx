@@ -20,6 +20,9 @@ import { cn } from "@/lib/utils";
 // without reaching Google's CDN; the Draco decoder is served locally too.
 const MODEL_VIEWER_SRC = "/vendor/model-viewer/model-viewer-4.0.0.min.js";
 const DRACO_DECODER_LOCATION = "/vendor/draco/";
+// Daylight sky (Poly Haven "Kloofendal 48d", CC0), colour-balanced to neutral
+// in Blender: directional sun for depth without a blue cast
+const ENVIRONMENT = "/vendor/env/daylight_neutral_1k.hdr";
 
 export interface ViewerHotspot {
   id: string;
@@ -48,6 +51,9 @@ interface ModelViewerProps {
   orbit?: string;
   // Attribution chip; pass null to hide it (e.g. when the page shows it)
   credit?: string | null;
+  // Per-model lighting (white marble needs less light than dark stone)
+  exposure?: number;
+  shadowIntensity?: number;
 }
 
 const DEFAULT_ORBIT = "-25deg 72deg 108%";
@@ -79,6 +85,8 @@ export function ModelViewer({
   focus = null,
   orbit = DEFAULT_ORBIT,
   credit = "Prepared in Blender · Virasat",
+  exposure = 1,
+  shadowIntensity = 1,
 }: ModelViewerProps) {
   const viewerRef = useRef<HTMLElement | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -157,10 +165,11 @@ export function ModelViewer({
         camera-orbit={orbit}
         interpolation-decay="120"
         interaction-prompt="none"
-        environment-image="neutral"
-        exposure="1.05"
-        shadow-intensity="1"
-        shadow-softness="0.8"
+        environment-image={ENVIRONMENT}
+        tone-mapping="neutral"
+        exposure={String(exposure)}
+        shadow-intensity={String(shadowIntensity)}
+        shadow-softness="0.7"
         ar
         ar-modes="webxr scene-viewer quick-look"
         ar-scale="auto"

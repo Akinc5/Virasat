@@ -38,6 +38,7 @@ export default async function HomePage() {
         modelUrl: model.modelUrl,
         displayScale: model.displayScale ?? 1,
         orbit: model.cameraOrbit,
+        exposure: model.exposure,
         credit: "Prepared in Blender · Virasat",
         tourStops: hasTour(site) ? (MONUMENT_HOTSPOTS[site.slug] ?? []).filter((h) => h.onModel !== false).length : 0,
         modelCount: models.length + (site.sketchfabModelId ? 1 : 0),

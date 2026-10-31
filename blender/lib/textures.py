@@ -182,12 +182,20 @@ def sandstone_rgb(size=512, seed=21):
     return _joints(col, size // 4, size // 2, 1.0, (0.55, 0.36, 0.29), 0.35)
 
 
+def red_sandstone_rgb(size=512, seed=23):
+    """The Red Fort's warmer, lighter Agra sandstone, laid in courses."""
+    n1, n2 = _fbm(size, size, 2.4, seed), _fbm(size, size, 1.2, seed + 1)
+    shade = 1 + 0.12 * (n1 - 0.5) + 0.07 * (n2 - 0.5)
+    col = np.array((0.60, 0.29, 0.20), np.float32)[None, None, :] * shade[..., None]
+    return _joints(col, size // 4, size // 2, 1.0, (0.72, 0.48, 0.38), 0.4)
+
+
 def grass_rgb(size=512, seed=31):
     """Mown lawn: fine blade noise over broad patches of lighter and darker green."""
     fine, broad = _fbm(size, size, 0.6, seed), _fbm(size, size, 2.6, seed + 1)
     shade = 0.82 + 0.22 * fine + 0.18 * (broad - 0.5)
-    base = np.array((0.17, 0.30, 0.10), np.float32)[None, None, :]
-    dry = np.array((0.36, 0.34, 0.16), np.float32)[None, None, :]
+    base = np.array((0.26, 0.33, 0.15), np.float32)[None, None, :]
+    dry = np.array((0.44, 0.40, 0.22), np.float32)[None, None, :]
     mix = np.clip((broad - 0.62) * 2.5, 0, 1)[..., None] * 0.35
     return (base * (1 - mix) + dry * mix) * shade[..., None]
 
@@ -260,7 +268,8 @@ TEXTURES = {
     "band": ("tex_band", "jpg", band_rgb),
     "jali": ("tex_jali", "png", jali_rgba),
     "sandstone": ("tex_red_sandstone", "jpg", sandstone_rgb),
-    "grass": ("tex_grass", "jpg", grass_rgb),
+    "grass": ("tex_grass_v2", "jpg", grass_rgb),
+    "red_sandstone": ("tex_red_sandstone_fort", "jpg", red_sandstone_rgb),
     "paving": ("tex_paving", "jpg", paving_rgb),
     "flag": ("tex_flag_india", "jpg", flag_rgb),
 }

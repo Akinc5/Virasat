@@ -250,6 +250,8 @@ export function ExperienceViewer({ site, className }: ExperienceViewerProps) {
         scale={shownModel.displayScale}
         poster={shownModel.thumbnailUrl}
         orbit={shownModel.cameraOrbit}
+        exposure={shownModel.exposure}
+        shadowIntensity={shownModel.shadowIntensity}
         credit={null}
         className="flex-1 min-h-[520px] rounded-none border-0"
         hotspots={stops.map((h) => ({ id: h.id, label: h.title.replace(/\s*\(.*\)$/, ""), position: h.position, normal: h.normal }))}
