@@ -87,6 +87,9 @@ export interface ThreeDModel {
   label?: string;
   // Default camera orbit, for models whose best view isn't the front
   cameraOrbit?: string;
+  // Viewer lighting: exposure (1 = neutral) and contact-shadow strength
+  exposure?: number;
+  shadowIntensity?: number;
   // Uniform scale applied in the viewer and AR (Blender models are 1 unit = 1 m,
   // so e.g. 0.01 turns the 96 m Taj Mahal plinth into a ~1 m tabletop model)
   displayScale?: number;

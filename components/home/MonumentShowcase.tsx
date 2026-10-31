@@ -21,6 +21,7 @@ export interface ShowcaseMonument {
   modelUrl: string;
   displayScale: number;
   orbit?: string;
+  exposure?: number;
   credit: string;
   tourStops: number;
   modelCount: number;
@@ -129,6 +130,7 @@ export function MonumentShowcase({ monuments }: { monuments: ShowcaseMonument[] 
             title={m.name}
             scale={m.displayScale}
             orbit={m.orbit}
+            exposure={m.exposure}
             credit={m.credit}
             className="relative h-[480px] rounded-[1.5rem] shadow-xl"
           />

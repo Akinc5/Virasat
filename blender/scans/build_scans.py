@@ -61,11 +61,11 @@ TAJ_DROP = {1, 34}                     # a line-strip helper and a stray sliver
 # Red Fort: source material name → (texture key in blender/lib/textures.py,
 # tile size in metres, roughness). The source model ships flat colours only.
 RED_FORT_MATERIALS = {
-    "07_-_Default": ("sandstone", 3.0, 0.85),   # walls, gates, bastions — red sandstone
+    "07_-_Default": ("red_sandstone", 3.0, 0.85),   # walls, gates, bastions — red sandstone
     "08_-_Default": ("marble", 2.5, 0.35),      # chhatri domes and kiosks — white marble
     "09_-_Default": ("paving", 4.0, 0.9),       # walkways and courtyards
     "02_-_Default": ("grass", 6.0, 1.0),        # lawns
-    "01_-_Default": ("sandstone", 3.0, 0.85),
+    "01_-_Default": ("red_sandstone", 3.0, 0.85),
     "03_-_Default": (None, 0, 0.5),             # railings — dark wrought iron
     "lambert1": (None, 0, 0.15),                # fountain pools — still water
     "04_-_Default": ("flag", 0, 0.8),           # the national flag over Lahori Gate
@@ -243,6 +243,33 @@ def box_uvs(me, tiles):
     bm.free()
 
 
+def bake_ambient_occlusion(obj, distance=6.0, floor=0.4):
+    """Bake ambient occlusion into a vertex colour layer. glTF viewers multiply
+    vertex colours into the base colour, so corners, wall bases and window
+    recesses darken softly — depth the flat-coloured source never had."""
+    sc = bpy.context.scene
+    sc.render.engine = "CYCLES"
+    sc.cycles.device = "CPU"
+    sc.cycles.samples = 32
+    if sc.world is None:
+        sc.world = bpy.data.worlds.new("bake")
+    sc.world.light_settings.distance = distance
+    me = obj.data
+    attr = me.color_attributes.new("AO", "BYTE_COLOR", "POINT")
+    me.color_attributes.active_color = attr
+    for o in bpy.context.view_layer.objects:
+        o.select_set(o is obj)
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.bake(type="AO", target="VERTEX_COLORS")
+    # Soften: keep occlusion between `floor` and 1 so nothing turns black
+    import numpy as np
+    c = np.empty(len(attr.data) * 4, dtype=np.float32)
+    attr.data.foreach_get("color", c)
+    c = c.reshape(-1, 4)
+    c[:, :3] = floor + (1 - floor) * c[:, :3]
+    attr.data.foreach_set("color", c.ravel())
+
+
 def crop_ground(me, margin=0.12):
     """The source sits on a lawn several times wider than the fort; replace it
     with one that extends a small margin past the buildings."""
@@ -371,6 +398,8 @@ def main():
                 if m and m.name.startswith(f"redfort_{key or src_name}"):
                     tiles[idx] = "fit" if key == "flag" else (tile or 1.0)
         box_uvs(me, tiles)
+        bake_ambient_occlusion(obj)
+        print(f"[{name}] baked ambient occlusion into vertex colours")
     obj.name = name
     e = (mx - mn) * k
     print(f"[{name}] size {e.x:.1f} x {e.y:.1f} x {e.z:.1f} m")
@@ -381,6 +410,7 @@ def main():
         export_draco_position_quantization=14, export_draco_texcoord_quantization=12,
         export_image_format="JPEG", export_jpeg_quality=85, export_yup=True,
         export_apply=True, export_tangents=False, export_animations=False,
+        export_vertex_color="ACTIVE" if name == "red-fort" else "MATERIAL",
     )
 
     render_preview(obj, preview)
