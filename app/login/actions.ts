@@ -1,10 +1,12 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import { createUser } from "@/lib/auth/users";
 import { safeCallbackUrl } from "@/lib/auth/callback";
+import { WELCOME_COOKIE, type WelcomeKind } from "@/lib/auth/welcome";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -18,12 +20,20 @@ function back(mode: "signin" | "signup", error: string, callbackUrl: string): ne
   redirect(`/login?${q.toString()}`);
 }
 
+async function setWelcome(kind: WelcomeKind, maxAge: number) {
+  (await cookies()).set(WELCOME_COOKIE, kind, { path: "/", sameSite: "lax", maxAge });
+}
+
 async function signInOrBack(email: string, password: string, mode: "signin" | "signup", callbackUrl: string) {
+  await setWelcome(mode, 60);
   try {
     // On success this throws Next's redirect, which must propagate
     await signIn("credentials", { email, password, redirectTo: callbackUrl });
   } catch (err) {
-    if (err instanceof AuthError) back(mode, "invalid", callbackUrl);
+    if (err instanceof AuthError) {
+      (await cookies()).delete(WELCOME_COOKIE);
+      back(mode, "invalid", callbackUrl);
+    }
     throw err;
   }
 }
@@ -55,5 +65,7 @@ export async function signUpWithPassword(form: FormData) {
 }
 
 export async function signInWithGoogle(form: FormData) {
+  // Google's consent screen can take a while; give the greeting longer to arrive
+  await setWelcome("signin", 600);
   await signIn("google", { redirectTo: safeCallbackUrl(field(form, "callbackUrl")) });
 }
