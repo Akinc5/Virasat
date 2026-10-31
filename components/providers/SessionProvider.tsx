@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { SessionProvider as NextAuthSessionProvider, useSession } from "next-auth/react";
+import { WelcomeToast } from "@/components/auth/WelcomeToast";
 
 // Sign-in and sign-up run as server actions that redirect, so the client's
 // cached session goes stale; re-read it whenever the route changes.
@@ -26,6 +27,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   return (
     <NextAuthSessionProvider>
       <RefreshOnNavigate />
+      <WelcomeToast />
       {children}
     </NextAuthSessionProvider>
   );
